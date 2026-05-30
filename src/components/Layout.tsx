@@ -9,18 +9,25 @@ import { useAppContext } from '../context/AppContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LogOut, User as UserIcon, Bell, Search, Info, ShieldAlert,
-  LayoutDashboard, Map as MapIcon, Cpu, FileText, Settings as SettingsIcon 
+  LayoutDashboard, Map as MapIcon, Cpu, FileText, Settings as SettingsIcon,
+  MoreVertical, Palette, PhoneCall, Check, Truck, ChevronRight
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import i18n from '../lib/i18n';
 import { ErrorBoundary } from './ErrorBoundary';
 import { ToastContainer } from './Toast';
 
 const Layout = () => {
   const { t } = useTranslation();
-  const { user, lang, theme, textSize, fontFamily, sidebarCollapsed, projectIdentity, logout, notifications, markNotificationAsRead } = useAppContext();
+  const { user, lang, theme, textSize, fontFamily, sidebarCollapsed, projectIdentity, logout, notifications, markNotificationAsRead, showToast } = useAppContext();
   const location = useLocation();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showUnauthorizedModal, setShowUnauthorizedModal] = useState(false);
+  const [unauthorizedModuleName, setUnauthorizedModuleName] = useState('');
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
 
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 900);
 
@@ -33,14 +40,14 @@ const Layout = () => {
   }, []);
 
   const bottomTabs = [
-    { id: 'dashboard', name: t('dashboard'), icon: LayoutDashboard, path: '/', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
-    { id: 'map', name: t('map'), icon: MapIcon, path: '/map', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
-    { id: 'ai', name: t('ai_center'), icon: Cpu, path: '/ai', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager'] },
-    { id: 'reports', name: t('reports'), icon: FileText, path: '/reports', roles: ['admin', 'afad_operator', 'health_personnel'] },
-    { id: 'settings', name: t('settings'), icon: SettingsIcon, path: '/settings', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] }
+    { id: 'dashboard', name: t('panel', 'Panel'), icon: LayoutDashboard, path: '/', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
+    { id: 'map', name: t('map', 'Harita'), icon: MapIcon, path: '/map', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
+    { id: 'ai', name: t('ai_center', 'ARZ AI'), icon: Cpu, path: '/ai', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager'] },
+    { id: 'reports', name: t('reports', 'Raporlar'), icon: FileText, path: '/reports', roles: ['admin', 'afad_operator', 'health_personnel'] },
+    { id: 'settings', name: t('settings', 'Ayarlar'), icon: SettingsIcon, path: '/settings', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] }
   ];
 
-  const visibleBottomTabs = bottomTabs.filter(tab => user?.role && tab.roles.includes(user.role));
+  const visibleBottomTabs = bottomTabs;
 
   const languages = [
     { id: 'tr', code: 'TR', name: 'Türkçe', flag: '🇹🇷' },
@@ -131,10 +138,13 @@ const Layout = () => {
             </div>
 
             <div className="flex items-center gap-6">
-              <div className="hidden md:flex items-center gap-2.5 bg-red-600 text-app-on-primary px-4 py-2 rounded-xl shadow-lg shadow-red-600/20 animate-pulse border border-red-700">
+              <button 
+                onClick={() => setShowEmergencyModal(true)}
+                className="hidden md:flex items-center gap-2.5 bg-red-600 text-white px-4 py-2 rounded-xl shadow-lg shadow-red-600/20 hover:bg-red-750 border border-red-700 animate-pulse cursor-pointer shrink-0"
+              >
                 <ShieldAlert size={14} />
-                <span className="text-[10px] font-black uppercase tracking-widest">{t('emergency_mode')}</span>
-              </div>
+                <span className="text-[10px] font-black uppercase tracking-widest">{t('emergency_mode', 'ACİL DURUM PROTOKÖLÜ')}</span>
+              </button>
 
               {/* Sync Status */}
               <SyncStatus />
@@ -238,65 +248,126 @@ const Layout = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              {/* Language Selector */}
-              <LanguageSelector />
+            {/* Dikey 3-nokta menüsü */}
+            <div className="relative">
+              <button 
+                onClick={() => setShowMobileMenu(prev => !prev)}
+                className="p-2 rounded-xl text-app-text hover:bg-app-bg transition-all focus:outline-none"
+              >
+                <MoreVertical size={22} className="text-app-text" />
+              </button>
 
-              {/* Notification Button */}
-              <div className="relative">
-                <button 
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className={`p-2 rounded-xl transition-all relative ${showNotifications ? 'bg-primary text-app-on-primary shadow-sm' : 'text-app-muted hover:bg-app-bg'}`}
-                >
-                  <Bell size={18} />
-                  {notifications.some(n => !n.read) && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary rounded-full border border-white" />
-                  )}
-                </button>
-
-                <AnimatePresence>
-                  {showNotifications && (
+              <AnimatePresence>
+                {showMobileMenu && (
+                  <>
+                    <div className="fixed inset-0 z-50 bg-black/5" onClick={() => setShowMobileMenu(false)} />
+                    
                     <motion.div 
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                      initial={{ opacity: 0, scale: 0.95, y: -10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                      className="absolute right-[-40px] mt-3 w-72 bg-app-card border border-app-border rounded-2xl shadow-premium overflow-hidden z-[60]"
+                      exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                      className="absolute right-0 mt-2 w-64 bg-app-card border border-app-border rounded-[2rem] shadow-premium overflow-hidden z-[60] py-2"
                     >
-                      <div className="p-4 border-b border-app-border flex items-center justify-between bg-app-bg/50">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-app-text">Bildirimler</span>
-                        <button className="text-[8px] font-black text-app-primary hover:underline uppercase">Hepsini Oku</button>
+                      <div className="px-3 pb-2 pt-1 border-b border-app-border">
+                        <button 
+                          onClick={() => {
+                            setShowEmergencyModal(true);
+                            setShowMobileMenu(false);
+                          }}
+                          className="w-full bg-[#E30613] text-white hover:bg-red-700 transition-all py-2.5 px-4 rounded-xl font-black text-[10px] tracking-widest flex items-center justify-center gap-2 uppercase shadow-md shadow-red-500/20"
+                        >
+                          <ShieldAlert size={14} className="animate-bounce" />
+                          <span>ACİL DURUM PROTOKÖLÜ</span>
+                        </button>
                       </div>
-                      <div className="max-h-72 overflow-y-auto">
-                        {notifications.length > 0 ? (
-                          notifications.map(n => (
-                            <div 
-                              key={n.id} 
-                              onClick={() => markNotificationAsRead(n.id)}
-                              className={`p-4 border-b border-app-border cursor-pointer transition-all hover:bg-app-bg flex gap-3 ${!n.read ? 'bg-app-primary/10/20' : ''}`}
+
+                      <div className="flex flex-col text-xs font-bold text-app-text">
+                        <button 
+                          onClick={() => {
+                            navigate('/profile');
+                            setShowMobileMenu(false);
+                          }}
+                          className="px-4 py-3 hover:bg-app-bg flex items-center gap-3 transition-all text-left uppercase text-[10px] tracking-wider"
+                        >
+                          <UserIcon size={16} className="text-app-primary" />
+                          <span>PROFiL</span>
+                        </button>
+
+                        <button 
+                          onClick={() => {
+                            navigate('/settings');
+                            setShowMobileMenu(false);
+                          }}
+                          className="px-4 py-3 hover:bg-app-bg flex items-center gap-3 transition-all text-left uppercase text-[10px] tracking-wider"
+                        >
+                          <Palette size={16} className="text-orange-500" />
+                          <span>GÖRÜNÜM / TEMA</span>
+                        </button>
+
+                        <button 
+                          onClick={() => {
+                            setShowNotifications(!showNotifications);
+                            setShowMobileMenu(false);
+                          }}
+                          className="px-4 py-3 hover:bg-app-bg flex items-center justify-between gap-3 transition-all text-left uppercase text-[10px] tracking-wider"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Bell size={16} className="text-yellow-500" />
+                            <span>BİLDİRİMLER ({(notifications.filter(n => !n.read)).length})</span>
+                          </div>
+                          {notifications.some(n => !n.read) && (
+                            <span className="w-2 h-2 bg-[#E30613] rounded-full animate-ping" />
+                          )}
+                        </button>
+
+                        <div className="px-4 py-2 bg-app-bg/50 border-y border-app-border">
+                          <div className="text-[8px] font-black uppercase text-app-muted tracking-widest mb-1.5 flex items-center gap-1">
+                            <GlobeIcon size={10} /> DİL SEÇİMİ / LANGUAGE
+                          </div>
+                          <div className="grid grid-cols-2 gap-1.5">
+                            <button 
+                              onClick={() => {
+                                i18n.changeLanguage('tr');
+                                setShowMobileMenu(false);
+                              }}
+                              className={`py-1 px-2 text-[9px] font-black rounded-lg transition-all border ${i18n.language === 'tr' ? 'bg-app-primary border-app-primary text-white font-black' : 'bg-app-card border-app-border text-app-muted'}`}
                             >
-                              <div className="flex flex-col gap-1">
-                                <div className="text-[10px] font-black leading-tight text-app-text">{n.title}</div>
-                                <div className="text-[9px] text-app-muted font-medium leading-relaxed">{n.message}</div>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="p-6 text-center text-app-muted font-bold text-[10px] uppercase tracking-widest">Bildirim yok</div>
-                        )}
+                              🇹🇷 TR
+                            </button>
+                            <button 
+                              onClick={() => {
+                                i18n.changeLanguage('en');
+                                setShowMobileMenu(false);
+                              }}
+                              className={`py-1 px-2 text-[9px] font-black rounded-lg transition-all border ${i18n.language === 'en' ? 'bg-app-primary border-app-primary text-white font-black' : 'bg-app-card border-app-border text-app-muted'}`}
+                            >
+                              🇺🇸 EN
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="px-4 py-2.5 flex items-center justify-between border-b border-app-border">
+                          <span className="text-[10px] uppercase font-black text-app-muted tracking-wider">SİSTEM DURUMU:</span>
+                          <span className="text-[9px] uppercase font-black text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Check size={10} /> ONLINE
+                          </span>
+                        </div>
+
+                        <button 
+                          onClick={() => {
+                            logout();
+                            setShowMobileMenu(false);
+                          }}
+                          className="px-4 py-3 hover:bg-red-50 text-red-650 flex items-center gap-3 transition-all text-left uppercase text-[10px] tracking-wider"
+                        >
+                          <LogOut size={16} className="text-red-500" />
+                          <span className="text-red-500 font-black">OTURUMU KAPAT</span>
+                        </button>
                       </div>
                     </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Profile/LogOut Icon */}
-              <button 
-                onClick={logout}
-                title={t('logout') || 'Çıkış Yap'}
-                className="p-2 rounded-xl text-red-500 hover:bg-red-50 transition-all shrink-0 cursor-pointer"
-              >
-                <LogOut size={18} />
-              </button>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
           </header>
         )}
@@ -304,7 +375,7 @@ const Layout = () => {
         {/* Content */}
         <main 
           className="flex-1 overflow-y-auto p-4 md:p-10 custom-scrollbar bg-[#F8FAFC]"
-          style={isMobile ? { paddingBottom: 'calc(90px + env(safe-area-inset-bottom))' } : undefined}
+          style={isMobile ? { paddingBottom: 'calc(100px + env(safe-area-inset-bottom))' } : undefined}
         >
           <ErrorBoundary>
             <AnimatePresence mode="wait">
@@ -326,19 +397,204 @@ const Layout = () => {
           <nav className="mobile-bottom-nav">
             {visibleBottomTabs.map((tab) => {
               const TabIcon = tab.icon;
+              const isAuthorized = user?.role && tab.roles.includes(user.role);
+              const isActive = location.pathname === tab.path;
+              
               return (
-                <NavLink
+                <div
                   key={tab.id}
-                  to={tab.path}
-                  className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}
+                  onClick={(e) => {
+                    if (!isAuthorized) {
+                      e.preventDefault();
+                      setUnauthorizedModuleName(tab.name);
+                      setShowUnauthorizedModal(true);
+                    } else {
+                      navigate(tab.path);
+                    }
+                  }}
+                  className={`bottom-nav-item cursor-pointer flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-300 ${
+                    isActive ? 'active-item text-app-primary' : 'text-app-muted'
+                  }`}
                 >
-                  <TabIcon size={20} />
-                  <span>{tab.name}</span>
-                </NavLink>
+                  <TabIcon size={20} className={isActive ? 'scale-110' : ''} />
+                  <span className="text-[9px] font-black uppercase mt-1 tracking-wider">{tab.name}</span>
+                </div>
               );
             })}
           </nav>
         )}
+
+        {/* Premium Unauthorized Access Modal */}
+        <AnimatePresence>
+          {showUnauthorizedModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowUnauthorizedModal(false)}
+                className="fixed inset-0 bg-neutral-950/70 backdrop-blur-md" 
+              />
+              
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="bg-app-card w-full max-w-sm rounded-[3.5rem] border border-app-border shadow-premium overflow-hidden relative z-10 p-8 text-center space-y-6"
+              >
+                <div className="w-16 h-16 bg-red-50 text-[#E30613] rounded-[2rem] flex items-center justify-center mx-auto border border-red-100">
+                  <ShieldAlert size={28} className="animate-pulse" />
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-[9px] font-black text-[#E30613] uppercase tracking-[0.3em] font-mono block">ERİŞİM ENGELLENDİ</span>
+                  <h3 className="text-lg font-black text-app-text uppercase tracking-tight">YETKİNİZ YETERSİZ</h3>
+                  <p className="text-xs font-bold text-app-muted leading-relaxed uppercase">
+                    &quot;{unauthorizedModuleName || 'Bu Modül'}&quot; için operatör dereceniz yeterli değildir. Modüle erişim almak için koordinasyon merkezine başvurun.
+                  </p>
+                </div>
+
+                <button 
+                  onClick={() => setShowUnauthorizedModal(false)}
+                  className="w-full bg-[#003366] text-white hover:bg-[#002244] py-3.5 px-6 rounded-2xl font-black text-[11px] tracking-widest uppercase transition-all"
+                >
+                  KAPAT
+                </button>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Global Emergency Protocol Modal */}
+        <AnimatePresence>
+          {showEmergencyModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowEmergencyModal(false)}
+                className="fixed inset-0 bg-red-950/70 backdrop-blur-md" 
+              />
+              
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="bg-app-card w-full max-w-lg rounded-[3.5rem] border-2 border-[#E30613]/50 shadow-[0_25px_60px_rgba(237,28,36,0.3)] overflow-hidden relative z-10 p-8 space-y-6"
+              >
+                <div className="flex items-center gap-4 border-b border-app-border pb-4">
+                  <div className="w-12 h-12 bg-red-100 text-[#E30613] rounded-2xl flex items-center justify-center shrink-0">
+                    <ShieldAlert size={24} className="animate-bounce" />
+                  </div>
+                  <div>
+                    <span className="text-[9px] font-black text-[#E30613] tracking-[0.3em] uppercase leading-none block font-mono">ARZ PROTOKOL SİNYALİ</span>
+                    <h3 className="text-lg font-black text-app-text tracking-tight uppercase mt-1 leading-tight">ACİL DURUM AKSİYONLARI</h3>
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  <button 
+                    onClick={() => {
+                      setShowEmergencyModal(false);
+                      navigate('/reports', { state: { openNewReport: true } });
+                      showToast('Saha bildirimi oluşturma ekranına yönlendirildi.', 'success');
+                    }}
+                    className="w-full bg-app-bg hover:bg-neutral-100 p-4 rounded-2xl border border-app-border flex items-center justify-between text-left transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><FileText size={16} /></div>
+                      <div>
+                        <div className="text-[10px] font-black uppercase text-app-text">{t('emergency_protocol_btn_field', 'SAHA BiLDiRiMi BAŞLAT')}</div>
+                        <div className="text-[8px] font-bold text-app-muted uppercase">Anlık saha bilgisi ve vaka girişi</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className="text-app-muted" />
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      setShowEmergencyModal(false);
+                      navigate('/map');
+                      showToast('Afet Haritası başarıyla yüklendi.', 'success');
+                    }}
+                    className="w-full bg-app-bg hover:bg-neutral-100 p-4 rounded-2xl border border-app-border flex items-center justify-between text-left transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><MapIcon size={16} /></div>
+                      <div>
+                        <div className="text-[10px] font-black uppercase text-app-text">{t('emergency_protocol_btn_map', 'AFET HARiTASINI AÇ')}</div>
+                        <div className="text-[8px] font-bold text-app-muted uppercase">Canlı koordinat ve afet olay veri katmanları</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className="text-app-muted" />
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      setShowEmergencyModal(false);
+                      navigate('/ai');
+                      showToast('ARZ AI Akıllı Asistanı yüklendi.', 'info');
+                    }}
+                    className="w-full bg-app-bg hover:bg-neutral-100 p-4 rounded-2xl border border-app-border flex items-center justify-between text-left transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><Cpu size={16} /></div>
+                      <div>
+                        <div className="text-[10px] font-black uppercase text-app-text">{t('emergency_protocol_btn_ai', 'ARZ AI ANALiZ AKTiF ET')}</div>
+                        <div className="text-[8px] font-bold text-app-muted uppercase">Yerel yapay zeka modeline durum analiz soruları gönder</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className="text-app-muted" />
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      setShowEmergencyModal(false);
+                      navigate('/logistics');
+                      showToast('Lojistik Planlama modülüne yönlendirildi.', 'info');
+                    }}
+                    className="w-full bg-app-bg hover:bg-neutral-100 p-4 rounded-2xl border border-app-border flex items-center justify-between text-left transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><Truck size={16} /></div>
+                      <div>
+                        <div className="text-[10px] font-black uppercase text-app-text">Lojistik Önceliklendirme Yap</div>
+                        <div className="text-[8px] font-bold text-app-muted uppercase">Rotalar, sevk araçları ve yardım tırı planlama</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className="text-app-muted" />
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      setShowEmergencyModal(false);
+                      navigate('/reports', { state: { openEmergencyForm: true } });
+                      showToast('Acil Yardım Talebi Formu açıldı.', 'success');
+                    }}
+                    className="w-full bg-red-50 hover:bg-red-100 p-4 rounded-2xl border border-[#E30613]/20 flex items-center justify-between text-left transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-red-100 text-[#E30613] flex items-center justify-center"><PhoneCall size={16} className="animate-bounce" /></div>
+                      <div>
+                        <div className="text-[10px] font-black uppercase text-red-750">{t('emergency_help', 'ACiL YARDIM TALEBi')}</div>
+                        <div className="text-[8px] font-bold text-red-700 uppercase">Doğrudan yüksek öncelikli kırmızı kod bildirimi</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className="text-[#E30613]" />
+                  </button>
+                </div>
+
+                <button 
+                  onClick={() => setShowEmergencyModal(false)}
+                  className="w-full bg-[#003366] text-white hover:bg-[#002244] py-3.5 px-6 rounded-2xl font-black text-[11px] tracking-widest uppercase transition-all text-center block"
+                >
+                  {t('emergency_protocol_btn_back', 'GERi DÖN / KAPAT')}
+                </button>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Footer */}
         {!isMobile && (

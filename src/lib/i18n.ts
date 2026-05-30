@@ -35,6 +35,12 @@ const resources = {
       "app_name": "ARZ",
       "app_full_name": "Afet Raporlama ve Zamanlama Sistemi",
       "slogan": "Doğru Veri, Doğru Zaman, Doğru Müdahale.",
+      "ai_chip_summarize": "Genel afet durumunu özetle",
+      "ai_chip_region": "En kritik bölge neresi?",
+      "ai_chip_clinical_risks": "Klinik riskleri değerlendir",
+      "ai_chip_logistics_priority": "Lojistik sevkiyat önceliği",
+      "ai_chip_map_recommendations": "Harita verisi önerileri",
+      "ai_chip_first_hour": "İlk saat planı",
       "add_report": "Rapor Oluştur",
       "emergency_help": "Acil Yardım Talebi",
       "new_field_report": "Yeni Saha Bildirimi",
@@ -133,7 +139,7 @@ const resources = {
       "allergy": "Alerji",
       "chronic_disease": "Kronik Hastalık",
       "emergency_note": "Acil Not",
-      "about_desc": "ARZ v5.1.1 - Afet Raporlama ve Zamanlama Sistemi. Bu sistem afet anında veri bütünlüğü ve koordinasyon sağlamak için Şehmus AYKUT tarafından geliştirilmiştir.",
+      "about_desc": "ARZ - Afet Raporlama ve Zamanlama Sistemi. Bu sistem afet anında veri bütünlüğü ve koordinasyon sağlamak için Şehmus AYKUT tarafından geliştirilmiştir.",
       "advisor_info": "Akademik Danışman: Doç. Dr. Ferkan SAY",
       "developer_info": "Baş Geliştirici: Şehmus AYKUT",
       "emergency_mode": "ACİL DURUM PROTOKOLÜ",
@@ -234,7 +240,13 @@ const resources = {
         "mapEarthquakeLayer": "Deprem Katmanı",
         "mapFloodLayer": "Sel Katmanı",
         "mapFireLayer": "Yangın Katmanı",
-        "mapHealthPoints": "Sağlık Noktaları"
+        "mapHealthPoints": "Sağlık Noktaları",
+        "mapMode": "Harita Modu",
+        "realtimeAnalysisMode": "Anlık Analiz Modu",
+        "detailedAnalysisMode": "Detaylı Analiz Modu",
+        "memory": "Hafıza ve Öğrenme",
+        "localBrain": "Yerel Motor (Local Brain)",
+        "alertLive": "Uydudan Canlı Akış"
       },
       "actions": {
         "save": "Kaydet",
@@ -403,6 +415,12 @@ const resources = {
       "app_name": "ARZ",
       "app_full_name": "Disaster Reporting & Timing System",
       "slogan": "Right Data, Right Time, Right Action.",
+      "ai_chip_summarize": "Summarize disaster status",
+      "ai_chip_region": "Which region is most critical?",
+      "ai_chip_clinical_risks": "Evaluate clinical risks",
+      "ai_chip_logistics_priority": "Logistics shipment priority",
+      "ai_chip_map_recommendations": "Map data recommendations",
+      "ai_chip_first_hour": "First hour action plan",
       "add_report": "Create Report",
       "emergency_help": "Emergency Help Request",
       "new_field_report": "New Field Report",
@@ -592,7 +610,13 @@ const resources = {
         "mapEarthquakeLayer": "Earthquake Layer",
         "mapFloodLayer": "Flood Layer",
         "mapFireLayer": "Fire Layer",
-        "mapHealthPoints": "Health Points"
+        "mapHealthPoints": "Health Points",
+        "mapMode": "Map Mode",
+        "realtimeAnalysisMode": "Real-time Analysis Mode",
+        "detailedAnalysisMode": "Detailed Analysis Mode",
+        "memory": "Memory and Learning",
+        "localBrain": "Local Brain Integration",
+        "alertLive": "Satellite Live Streaming"
       },
       "actions": {
         "save": "Save",
@@ -1959,8 +1983,41 @@ i18n
     fallbackLng: 'tr',
     parseMissingKeyHandler: (key) => {
       if (!key) return '';
-      const clean = key.replace(/_/g, ' ');
-      return clean.charAt(0).toUpperCase() + clean.slice(1);
+      const lowerKey = key.toLowerCase();
+      
+      const manualMappings: Record<string, string> = {
+        'app_tunnel_01': 'Güvenli Bağlantı Tüneli 1',
+        'live data': 'Canlı Veri',
+        'live_data': 'Canlı Veri feed',
+        'up to date': 'Güncel Veri',
+        'up_to_date': 'Güncel Veri',
+        'layers': 'Katmanlar',
+        'add_report': 'Yeni Rapor Ekle',
+        'emergency_help': 'Acil Çağrı Koordinasyon',
+        'public_health': 'Halk Sağlığı Birimi',
+        'ai_center': 'ARZ AI İşlem Merkezi',
+      };
+      
+      if (manualMappings[key]) return manualMappings[key];
+      if (manualMappings[lowerKey]) return manualMappings[lowerKey];
+      
+      let clean = key;
+      if (clean.includes('.')) {
+        const parts = clean.split('.');
+        clean = parts[parts.length - 1];
+      }
+      
+      clean = clean.replace(/[_-]/g, ' ');
+      clean = clean.replace(/([a-z])([A-Z])/g, '$1 $2');
+      
+      return clean
+        .split(' ')
+        .map(word => {
+          if (!word) return '';
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(' ')
+        .trim();
     },
     interpolation: {
       escapeValue: false
