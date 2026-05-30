@@ -453,37 +453,80 @@ const Dashboard = () => {
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
                onClick={() => setShowEmergencyModal(false)}
-               className="absolute inset-0 bg-dark-surface/90 backdrop-blur-md"
+               className="absolute inset-0 bg-[#0c0f1d]/90 backdrop-blur-md"
              />
              <motion.div 
                initial={{ opacity: 0, scale: 0.9, y: 20 }}
                animate={{ opacity: 1, scale: 1, y: 0 }}
                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-               className="relative bg-app-card w-full max-w-lg rounded-[3rem] p-10 shadow-premium overflow-hidden"
+               className="relative bg-app-card w-full max-w-xl rounded-[3rem] p-8 sm:p-10 shadow-premium overflow-hidden border border-red-500/20 z-[101]"
              >
-                <div className="absolute top-0 left-0 w-full h-2 bg-secondary" />
-                <div className="space-y-8 text-center">
-                   <div className="w-20 h-20 bg-red-100 rounded-[2rem] flex items-center justify-center text-secondary mx-auto animate-alert">
-                      <PhoneCall size={32} />
+                <div className="absolute top-0 left-0 w-full h-2 bg-red-600 animate-pulse" />
+                <div className="space-y-6">
+                   <div className="flex items-center gap-4 border-b border-app-border pb-4">
+                      <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 shrink-0">
+                         <PhoneCall size={22} className="animate-bounce" />
+                      </div>
+                      <div className="text-left">
+                         <h2 className="text-2xl font-black text-app-text italic uppercase tracking-tighter">{t('emergency_protocol_title', 'Acil Durum Protokolü')}</h2>
+                         <p className="text-[10px] font-black text-red-500 uppercase tracking-widest leading-none mt-1">CRITICAL COMMAND DEPLOYMENT</p>
+                      </div>
                    </div>
-                   <div className="space-y-4">
-                      <h2 className="text-3xl font-black text-app-text italic uppercase tracking-tighter">Acil Yardım Hattı</h2>
-                      <p className="text-app-muted font-bold text-sm leading-relaxed px-6">
-                        Acil durum bildirimi yapmak üzeresiniz. Bu işlem sonrasında tüm AFAD ve 112 ekipleri konumunuza yönlendirilecektir.
-                      </p>
+
+                   <p className="text-left text-xs text-app-muted font-bold leading-relaxed">
+                      {t('emergency_protocol_subtitle', 'Protokol kapsamında anlık olarak devreye alınan operasyon adımları aşağıdadır:')}
+                   </p>
+
+                   {/* Steps List */}
+                   <div className="space-y-3 bg-app-bg/60 p-5 rounded-[2rem] border border-app-border font-sans text-left">
+                      {[
+                         t('emergency_protocol_step_1', 'Kritik afet alarmı oluştur'),
+                         t('emergency_protocol_step_2', 'Saha bildirimi başlat'),
+                         t('emergency_protocol_step_3', 'Lojistik önceliklendirme yap'),
+                         t('emergency_protocol_step_4', 'ARZ AI risk analizi çalıştır'),
+                         t('emergency_protocol_step_5', 'Haritada kritik bölgeyi göster')
+                      ].map((stepText, index) => (
+                         <div key={index} className="flex items-center gap-4 text-xs font-bold text-app-text">
+                            <span className="w-6 h-6 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-[10px] font-black text-red-600 shrink-0">
+                               {index + 1}
+                            </span>
+                            <span className="tracking-tight uppercase">{stepText}</span>
+                         </div>
+                      ))}
                    </div>
-                   <div className="grid grid-cols-2 gap-4 pt-4">
+
+                   {/* Functional Navigation Buttons */}
+                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                       <button 
-                        onClick={() => setShowEmergencyModal(false)}
-                        className="py-5 rounded-3xl bg-gray-100 text-app-muted text-xs font-black uppercase tracking-widest hover:bg-gray-200 transition-all"
+                        onClick={() => { setShowEmergencyModal(false); navigate('/field'); }}
+                        className="py-4 rounded-2xl bg-app-bg hover:bg-gray-100 text-app-text border border-app-border text-[11px] font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 flex flex-col items-center justify-center gap-2"
                       >
-                        İptal Et
+                        <FileText size={18} className="text-blue-500" />
+                        <span>{t('emergency_protocol_btn_field', 'Saha Bildirimi Aç')}</span>
                       </button>
                       <button 
-                        onClick={() => { setShowEmergencyModal(false); showToast('Acil Durum Mesajı İletildi', 'success'); }}
-                        className="py-5 rounded-3xl bg-secondary text-app-on-primary text-xs font-black uppercase tracking-widest shadow-xl shadow-red-500/20 hover:scale-[1.02] transition-all"
+                        onClick={() => { setShowEmergencyModal(false); navigate('/map'); }}
+                        className="py-4 rounded-2xl bg-app-bg hover:bg-gray-100 text-app-text border border-app-border text-[11px] font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 flex flex-col items-center justify-center gap-2"
                       >
-                        Bildirimi Gönder
+                        <MapIcon size={18} className="text-emerald-500" />
+                        <span>{t('emergency_protocol_btn_map', 'Haritayı Aç')}</span>
+                      </button>
+                      <button 
+                        onClick={() => { setShowEmergencyModal(false); navigate('/ai'); }}
+                        className="py-4 rounded-2xl bg-app-primary/10 hover:bg-blue-100 text-app-primary border border-blue-200 text-[11px] font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 flex flex-col items-center justify-center gap-2"
+                      >
+                        <Cpu size={18} className="text-app-primary" />
+                        <span>{t('emergency_protocol_btn_ai', 'ARZ AI Analiz')}</span>
+                      </button>
+                   </div>
+
+                   {/* Back/Close Button */}
+                   <div className="pt-2">
+                      <button 
+                        onClick={() => setShowEmergencyModal(false)}
+                        className="w-full py-4 rounded-2xl bg-red-600 text-white text-xs font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-600/20"
+                      >
+                        {t('emergency_protocol_btn_back', 'Geri Dön')}
                       </button>
                    </div>
                 </div>

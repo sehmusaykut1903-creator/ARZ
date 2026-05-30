@@ -7,12 +7,12 @@ export const projectIdentity: ProjectIdentity = {
   name: 'ARZ - Afet Raporlama ve Zamanlama',
   fullTitle: 'Yapay Zeka Destekli Ulusal Afet Raporlama, Zamanlama ve Karar Destek Sistemi',
   slogan: 'Doğru Veri, Doğru Zaman, Doğru Müdahale.',
-  team: 'Şehmus AYKUT',
+  team: 'Şehmus Aykut - Aghajan Musalı',
   institution: 'Yozgat Bozok Üniversitesi Tıp Fakültesi',
   department: 'Halk Sağlığı Anabilim Dalı',
-  advisor: 'Doç. Dr. Ferkan SAY',
-  leadDeveloper: 'Şehmus AYKUT',
-  version: 'v5.1.1 FINAL'
+  advisor: 'Prof. Dr. Vugar Ali TÜRKSOY',
+  leadDeveloper: 'Şehmus Aykut',
+  version: 'Şehmus Aykut tarafından geliştirilmiştir.'
 };
 
 interface AppContextType {

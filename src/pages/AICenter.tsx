@@ -131,14 +131,12 @@ const AICenter = () => {
   };
 
   const QuickActions = [
-    { label: t('ai.chips.summarize', "Genel afet durumunu özetle"), icon: Activity },
-    { label: t('ai.chips.critical_region', "En kritik bölge neresi?"), icon: AlertTriangle },
-    { label: t('ai.chips.clinical_risks', "Klinik riskleri değerlendir"), icon: ShieldCheck },
-    { label: t('ai.chips.logistics_priority', "Lojistik sevkiyat önceliği"), icon: Zap },
-    { label: t('ai.chips.map_recommendations', "Harita verisi önerileri"), icon: Layers },
-    { label: t('ai.chips.first6h', "İlk 6 saatlik plan"), icon: Terminal },
-    { label: t('ai.chips.first72h', "İlk 72 saatlik plan"), icon: Terminal },
-    { label: t('ai.chips.secure_plan', "Güvenli hareket planı"), icon: MessageSquare },
+    { label: t('ai_chip_summarize', "Genel afet durumunu özetle"), icon: Activity },
+    { label: t('ai_chip_region', "En kritik bölge neresi?"), icon: AlertTriangle },
+    { label: t('ai_chip_clinical_risks', "Klinik riskleri değerlendir"), icon: ShieldCheck },
+    { label: t('ai_chip_logistics_priority', "Lojistik sevkiyat önceliği"), icon: Zap },
+    { label: t('ai_chip_map_recommendations', "Harita verisi önerileri"), icon: Layers },
+    { label: t('ai_chip_first_hour', "İlk saat planı"), icon: Terminal },
   ];
 
   if (!aiSettings || !aiSettings.active) {

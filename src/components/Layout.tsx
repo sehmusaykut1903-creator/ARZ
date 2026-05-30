@@ -355,9 +355,6 @@ const Layout = () => {
                 <div className="w-1.5 h-1.5 bg-app-primary/100 rounded-full shadow-[0_0_5px_rgba(37,99,235,0.5)]"></div>
                 <span className="text-[9px] font-black text-app-muted uppercase tracking-widest leading-none">SECURE LINK (SSL)</span>
               </div>
-              <div className="bg-gray-100 px-4 py-1.5 rounded-lg text-[9px] font-black text-app-muted uppercase tracking-[0.2em] shrink-0 border border-app-border">
-                {projectIdentity.version}
-              </div>
             </div>
           </footer>
         )}

@@ -135,11 +135,11 @@ const Scanner = () => {
   };
 
   const currentTabInfo = {
-    qr: { title: t('qr_scan'), subtitle: 'Kamera ile QR veya Barkod tarayın', icon: QrCode },
-    id: { title: t('id_verify'), subtitle: 'T.C. Kimlik veya Pasaport doğrulaması', icon: IdCard },
-    nfc: { title: t('nfc_read'), subtitle: 'NFC özellikli kartları yaklaştırın', icon: Smartphone },
-    tag: { title: t('shipment_tag'), subtitle: 'Sevkiyat ve paket etiketlerini okutun', icon: Tag },
-    health: { title: t('health_id'), subtitle: 'Vatandaş sağlık profiline erişim', icon: HeartPulse },
+    qr: { title: t('qr_scan'), subtitle: t('qr_subtitle', 'Kamera ile QR veya Barkod tarayın'), icon: QrCode },
+    id: { title: t('id_verify'), subtitle: t('id_subtitle', 'T.C. Kimlik veya Pasaport doğrulaması'), icon: IdCard },
+    nfc: { title: t('nfc_read'), subtitle: t('nfc_subtitle', 'NFC özellikli kartları yaklaştırın'), icon: Smartphone },
+    tag: { title: t('shipment_tag'), subtitle: t('tag_subtitle', 'Sevkiyat ve paket etiketlerini okutun'), icon: Tag },
+    health: { title: t('health_id'), subtitle: t('health_subtitle', 'Vatandaş sağlık profiline erişim'), icon: HeartPulse },
   };
 
   return (
@@ -180,7 +180,7 @@ const Scanner = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: Tab Selection */}
         <div className="lg:col-span-3 space-y-3">
-          <h3 className="text-[10px] font-black text-app-muted uppercase tracking-[0.3em] mb-4 ml-4">GÖREV BİRİMİ</h3>
+          <h3 className="text-[10px] font-black text-app-muted uppercase tracking-[0.3em] mb-4 ml-4">{t('tab_task_unit', 'GÖREV BİRİMİ')}</h3>
           {(Object.keys(currentTabInfo) as Array<keyof typeof currentTabInfo>).map(tab => {
             const info = currentTabInfo[tab];
             const isActive = activeTab === tab;
@@ -197,7 +197,7 @@ const Scanner = () => {
                 </div>
                 <div>
                    <div className="text-xs font-black uppercase tracking-widest">{info.title}</div>
-                   <div className={`text-[9px] font-bold uppercase mt-1 opacity-60 ${isActive ? 'text-white' : 'text-app-muted'}`}>DOĞRULAMA</div>
+                   <div className={`text-[9px] font-bold uppercase mt-1 opacity-60 ${isActive ? 'text-white' : 'text-app-muted'}`}>{t('tab_validation', 'DOĞRULAMA')}</div>
                 </div>
               </button>
             );
@@ -207,9 +207,9 @@ const Scanner = () => {
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">
                 <ShieldCheck size={80} />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] italic mb-3 opacity-60">SİSTEM GÜVENLİĞİ</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] italic mb-3 opacity-60">{t('scan_system_security', 'SİSTEM GÜVENLİĞİ')}</p>
               <p className="text-xs font-bold leading-relaxed">
-                Tüm taramalar ARZ-E2E protokolü ile şifrelenir ve AFAD sunucuları ile anlık eşleşir.
+                {t('scan_security_text', 'Tüm taramalar ARZ-E2E protokolü ile şifrelenir ve AFAD sunucuları ile anlık eşleşir.')}
               </p>
           </div>
         </div>
@@ -272,7 +272,7 @@ const Scanner = () => {
                          <div className="flex-1 space-y-2 text-center md:text-left">
                             <div className="flex items-center justify-center md:justify-start gap-2">
                                <span className="px-3 py-1 bg-emerald-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest">{scanResult.status}</span>
-                               <span className="text-[10px] font-black text-app-muted uppercase tracking-[0.1em]">SİSTEM KAYDI AKTİF</span>
+                               <span className="text-[10px] font-black text-app-muted uppercase tracking-[0.1em]">{t('system_record_active', 'SİSTEM KAYDI AKTİF')}</span>
                             </div>
                             <h4 className="text-xl font-black text-app-text tracking-tighter uppercase italic">{scanResult.code || scanResult.name || scanResult.owner}</h4>
                             <p className="text-xs font-bold text-app-muted uppercase tracking-widest">
@@ -317,7 +317,7 @@ const Scanner = () => {
               <div className="p-8 flex items-center justify-between gap-6 border-t border-app-border">
                  <div className="hidden md:block">
                     <h4 className="text-[10px] font-black text-app-muted uppercase tracking-[0.2em]">{t('system_info')}</h4>
-                    <p className="text-xs font-bold text-app-text tracking-tight uppercase italic mt-1">SİSTEM BAĞLANTISI GÜVENLİ (.APP_TUNNEL_01)</p>
+                    <p className="text-xs font-bold text-app-text tracking-tight uppercase italic mt-1">{t('scanner_secure_connection', 'Sistem bağlantısı güvenli')}</p>
                  </div>
                  <div className="flex-1 flex justify-end gap-3">
                     <button 
@@ -341,9 +341,9 @@ const Scanner = () => {
            {/* Stats & History Grid */}
            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { label: 'BUGÜNÜN TARAMASI', val: '124', icon: QrCode, color: 'text-blue-500' },
-                { label: 'DOĞRULAMA ORANI', val: '%98', icon: ShieldCheck, color: 'text-emerald-500' },
-                { label: 'SİSTEM GECİKMESİ', val: '12ms', icon: Zap, color: 'text-amber-500' }
+                { label: t('scan_today', 'BUGÜNÜN TARAMASI'), val: '124', icon: QrCode, color: 'text-blue-500' },
+                { label: t('scan_rate', 'DOĞRULAMA ORANI'), val: '%98', icon: ShieldCheck, color: 'text-emerald-500' },
+                { label: t('scan_delay', 'SİSTEM GECİKMESİ'), val: '12ms', icon: Zap, color: 'text-amber-500' }
               ].map((s, i) => (
                 <div key={i} className="bg-app-card p-6 rounded-[2.5rem] border border-app-border shadow-sm flex items-center justify-between group hover:border-app-primary transition-all">
                   <div>

@@ -275,8 +275,8 @@ const Login = () => {
                       <p className="font-bold text-xs tracking-tight">{projectIdentity.team}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] text-red-500/50 uppercase tracking-widest font-black mb-1">SÜRÜM</p>
-                      <p className="font-bold text-xs tracking-tight text-red-100">v{projectIdentity.version}</p>
+                      <p className="hidden"></p>
+                      <p className="hidden"></p>
                     </div>
                  </div>
               </div>

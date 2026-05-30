@@ -286,11 +286,6 @@ const Settings = () => {
                 <span className="text-[9px] font-black text-app-muted uppercase tracking-widest mb-1">{t('institution', 'Kurum')}</span>
                 <span className="text-sm font-black text-app-text tracking-tight uppercase italic">Yozgat Bozok Üniversitesi Tıp Fakültesi</span>
               </div>
-
-              <div className="bg-app-bg/40 p-6 rounded-3xl border border-app-border flex flex-col justify-between md:col-span-2">
-                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest mb-1">{t('version', 'Sürüm')}</span>
-                <span className="text-sm font-black text-app-text tracking-tight uppercase italic">ARZ v5.1.1 / v5.2.0 Premium</span>
-              </div>
             </div>
 
             <div className="bg-app-bg/50 p-6 rounded-[2rem] border border-app-border text-center">
@@ -381,8 +376,6 @@ const Settings = () => {
         <div className="p-4 border-t border-app-border flex items-center justify-between text-[8px] font-black text-app-muted uppercase tracking-[0.2em] bg-app-bg/10">
            <div className="flex items-center gap-4">
               <span className="hidden sm:inline">{t('data_stored_locally')}</span>
-              <span className="w-1 h-1 rounded-full bg-app-muted opacity-30 hidden sm:inline" />
-              <span>{projectIdentity.version}</span>
            </div>
            <button onClick={() => setShowResetModal(true)} className="text-red-400 hover:text-red-500 transition-colors uppercase font-black">
              {t('reset_system')}

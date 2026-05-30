@@ -346,7 +346,7 @@ const Profile = () => {
               <ArzLogo className="grayscale opacity-20 scale-75" showText={false} />
               <p className="text-[8px] font-black text-app-muted uppercase tracking-[0.3em]">{t('system.online').toUpperCase()} DATA NETWORK</p>
               <p className="text-[9px] font-bold text-app-muted italic max-w-[200px] mx-auto leading-relaxed uppercase">
-                {projectIdentity.fullTitle} • {projectIdentity.version}
+                {projectIdentity.fullTitle}
               </p>
            </div>
         </div>
