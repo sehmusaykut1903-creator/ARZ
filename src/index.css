@@ -317,8 +317,9 @@
 }
 
 /* App tap improvements & premium touch behavior */
-body {
+body, html, #root, .app, .main, .content {
   overscroll-behavior-y: none;
+  overflow-x: hidden !important;
 }
 button, a, [role="button"] {
   touch-action: manipulation;

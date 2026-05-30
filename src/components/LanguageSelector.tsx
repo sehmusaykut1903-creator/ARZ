@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAppContext } from '../context/AppContext';
 
 export const LANGUAGES = [
   { id: 'tr', code: 'TR', name: 'Türkçe', flag: '🇹🇷' },
-  { id: 'en', code: 'EN', name: 'English', flag: '🇺🇸' },
-  { id: 'ru', code: 'RU', name: 'Русский', flag: '🇷🇺' },
+  { id: 'en', code: 'EN', name: 'English', flag: '🇬🇧' },
   { id: 'de', code: 'DE', name: 'Deutsch', flag: '🇩🇪' },
   { id: 'fr', code: 'FR', name: 'Français', flag: '🇫🇷' },
-  { id: 'az', code: 'AZ', name: 'Azərbaycan', flag: '🇦🇿' },
-  { id: 'ar', code: 'AR', name: 'العربية', flag: '🇸🇦' },
-  { id: 'it', code: 'IT', name: 'Italiano', flag: '🇮🇹' },
-  { id: 'pl', code: 'PL', name: 'Polski', flag: '🇵🇱' },
-  { id: 'fa', code: 'FA', name: 'فارسی', flag: '🇮🇷' },
   { id: 'es', code: 'ES', name: 'Español', flag: '🇪🇸' },
   { id: 'pt', code: 'PT', name: 'Português', flag: '🇵🇹' },
   { id: 'nl', code: 'NL', name: 'Nederlands', flag: '🇳🇱' },
+  { id: 'pl', code: 'PL', name: 'Polski', flag: '🇵🇱' },
+  { id: 'fa', code: 'FA', name: 'فارسی', flag: '🇮🇷' },
+  { id: 'ar', code: 'AR', name: 'العربية', flag: '🇸🇦' },
+  { id: 'az', code: 'AZ', name: 'Azərbaycanca', flag: '🇦🇿' },
+  { id: 'ru', code: 'RU', name: 'Русский', flag: '🇷🇺' }
 ];
 
 export const LanguageSelector = ({ variant = 'default' }: { variant?: 'default' | 'login' | 'settings' }) => {
   const { i18n } = useTranslation();
+  const { setLang } = useAppContext();
   const [isOpen, setIsOpen] = useState(false);
 
   const currentLang = LANGUAGES.find(l => l.id === i18n.language) || LANGUAGES[0];
 
   const handleSelect = (id: string) => {
-    i18n.changeLanguage(id);
-    localStorage.setItem('arz_lang', id);
+    setLang(id);
     setIsOpen(false);
   };
 

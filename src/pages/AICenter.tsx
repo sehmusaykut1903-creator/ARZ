@@ -131,14 +131,14 @@ const AICenter = () => {
   };
 
   const QuickActions = [
-    { label: "Genel afet durumunu özetle", icon: Activity },
-    { label: "En kritik bölge neresi?", icon: AlertTriangle },
-    { label: "Klinik riskleri değerlendir", icon: ShieldCheck },
-    { label: "Lojistik sevkiyat önceliği", icon: Zap },
-    { label: "Harita verisi önerileri", icon: Layers },
-    { label: "İlk 6 saatlik plan", icon: Terminal },
-    { label: "İlk 72 saatlik plan", icon: Terminal },
-    { label: "Güvenli hareket planı", icon: MessageSquare },
+    { label: t('ai.chips.summarize', "Genel afet durumunu özetle"), icon: Activity },
+    { label: t('ai.chips.critical_region', "En kritik bölge neresi?"), icon: AlertTriangle },
+    { label: t('ai.chips.clinical_risks', "Klinik riskleri değerlendir"), icon: ShieldCheck },
+    { label: t('ai.chips.logistics_priority', "Lojistik sevkiyat önceliği"), icon: Zap },
+    { label: t('ai.chips.map_recommendations', "Harita verisi önerileri"), icon: Layers },
+    { label: t('ai.chips.first6h', "İlk 6 saatlik plan"), icon: Terminal },
+    { label: t('ai.chips.first72h', "İlk 72 saatlik plan"), icon: Terminal },
+    { label: t('ai.chips.secure_plan', "Güvenli hareket planı"), icon: MessageSquare },
   ];
 
   if (!aiSettings || !aiSettings.active) {
@@ -148,9 +148,9 @@ const AICenter = () => {
            <div className="w-24 h-24 bg-app-bg text-app-muted rounded-[2rem] flex items-center justify-center mx-auto">
              <Cpu size={48} />
            </div>
-           <h3 className="text-3xl font-black text-app-text italic uppercase tracking-tighter">ARZ AI DEVRE DIŞI</h3>
+           <h3 className="text-3xl font-black text-app-text italic uppercase tracking-tighter">{t('ai.disabled_title', 'ARZ AI DEVRE DIŞI')}</h3>
            <p className="text-xs text-app-muted font-bold leading-relaxed uppercase tracking-widest">
-             Akıllı asistan ve analiz motoru şu anda kapalı. Kullanmak için sistem ayarlarından aktif edebilirsiniz.
+             {t('ai.disabled_desc', 'Akıllı asistan ve analiz motoru şu anda kapalı. Kullanmak için sistem ayarlarından aktif edebilirsiniz.')}
            </p>
         </div>
       </div>
@@ -158,7 +158,7 @@ const AICenter = () => {
   }
 
   return (
-    <div className="h-[calc(100vh-140px)] flex flex-col bg-app-card rounded-2xl md:rounded-[3.5rem] border border-app-border shadow-premium overflow-hidden relative">
+    <div className="h-[calc(100vh-190px)] md:h-[calc(100vh-140px)] flex flex-col bg-app-card rounded-2xl md:rounded-[3.5rem] border border-app-border shadow-premium overflow-hidden relative">
       <div className="p-4 md:p-8 border-b border-app-border flex items-center justify-between bg-app-card/80 backdrop-blur-xl sticky top-0 z-10">
         <div className="flex items-center gap-3 md:gap-5">
           <div className="relative">
@@ -167,22 +167,22 @@ const AICenter = () => {
           </div>
           <div>
             <h2 className="text-sm md:text-xl font-black text-app-text uppercase tracking-wider md:italic md:tracking-tighter">
-              ARZ AI <span className="hidden md:inline">(Akıllı Asistan)</span>
+              ARZ AI <span className="hidden md:inline">({t('ai.header_sub', 'Akıllı Asistan')})</span>
             </h2>
             <div className="flex flex-wrap items-center gap-1 md:gap-2 mt-0.5 md:mt-1">
-               <span className="text-[8px] md:text-[10px] text-blue-500 font-black uppercase tracking-widest leading-none bg-app-primary/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded">Local Brain</span>
-               <span className="text-[8px] md:text-[10px] text-emerald-500 font-black uppercase tracking-widest leading-none bg-emerald-50 px-1.5 py-0.5 md:px-2 md:py-1 rounded flex items-center gap-1"><Check size={8} /> Offline</span>
+               <span className="text-[8px] md:text-[10px] text-blue-500 font-black uppercase tracking-widest leading-none bg-app-primary/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded">{t('ai.local_brain', 'Local Brain')}</span>
+               <span className="text-[8px] md:text-[10px] text-emerald-500 font-black uppercase tracking-widest leading-none bg-emerald-50 px-1.5 py-0.5 md:px-2 md:py-1 rounded flex items-center gap-1"><Check size={8} /> {t('system.offline', 'Offline')}</span>
                {aiSettings.detailedAnalysisMode && (
-                 <span className="text-[8px] md:text-[10px] text-purple-500 font-black uppercase tracking-widest leading-none bg-purple-50 px-1.5 py-0.5 md:px-2 md:py-1 rounded">Analiz</span>
+                 <span className="text-[8px] md:text-[10px] text-purple-500 font-black uppercase tracking-widest leading-none bg-purple-50 px-1.5 py-0.5 md:px-2 md:py-1 rounded">{t('toggles.detailedAnalysisMode', 'Analiz')}</span>
                )}
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
            <button 
-             onClick={() => setMessages([{ id: '1', role: 'assistant', content: 'Geçmiş temizlendi. Yeni bir analiz başlatabiliriz.', timestamp: new Date() }])}
+             onClick={() => setMessages([{ id: '1', role: 'assistant', content: t('ai.clear_history_msg', 'Geçmiş temizlendi. Yeni bir analiz başlatabiliriz.'), timestamp: new Date() }])}
              className="p-2 md:p-3 hover:bg-red-50 text-app-muted hover:text-red-500 rounded-xl transition-all"
-             title="Temizle"
+             title={t('actions.clear', 'Temizle')}
            >
              <Eraser size={16} />
            </button>
@@ -311,7 +311,7 @@ const AICenter = () => {
                 <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }} className="w-2 h-2 bg-app-primary/40 rounded-full" />
                 <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.6 }} className="w-2 h-2 bg-app-primary/60 rounded-full" />
               </div>
-              <div className="text-[8px] md:text-[10px] font-black text-blue-500 uppercase tracking-widest italic animate-pulse">Yerel Motor Analiz Yapıyor...</div>
+              <div className="text-[8px] md:text-[10px] font-black text-blue-500 uppercase tracking-widest italic animate-pulse">{t('ai.analyzing', 'Yerel Motor Analiz Yapıyor...')}</div>
             </div>
           </div>
         )}
@@ -341,7 +341,7 @@ const AICenter = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Mesajınızı yazın..."
+              placeholder={t('ai.input_placeholder', 'Mesajınızı yazın...')}
               className="flex-1 w-full min-w-0 bg-transparent px-2 sm:px-4 text-xs sm:text-sm font-black italic focus:outline-none placeholder:text-app-muted text-app-text relative z-10"
              />
              <button 
@@ -350,12 +350,12 @@ const AICenter = () => {
               className="bg-app-primary hover:bg-blue-900 text-app-on-primary p-2 px-4 sm:px-10 rounded-xl sm:rounded-full shadow-lg shadow-app-primary/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 sm:gap-3 relative z-10 disabled:opacity-50 shrink-0"
               style={{ backgroundColor: 'var(--app-primary)' }}
              >
-                <span className="text-[10px] md:text-[11px] font-black tracking-widest hidden sm:block uppercase italic">ANALİZ ET</span>
+                <span className="text-[10px] md:text-[11px] font-black tracking-widest hidden sm:block uppercase italic">{t('ai.button_analyze', 'ANALİZ ET')}</span>
                 <Send size={15} />
              </button>
           </div>
           <p className="text-[8px] md:text-[9px] text-app-muted font-black text-center uppercase tracking-[0.3em] md:tracking-[0.4em] italic leading-none">
-            ARZ LOCAL BRAIN V3.0 • %100 YEREL VE GÜVENLİ AFET GRUBU ANALİZİ
+            {t('ai.footer_sub', 'ARZ LOCAL BRAIN V3.0 • %100 YEREL VE GÜVENLİ AFET GRUBU ANALİZİ')}
           </p>
         </div>
       </div>

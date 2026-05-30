@@ -31,6 +31,7 @@ import { useAppContext } from '../context/AppContext';
 import { ThemeType, TextSize, FontFamily, UserRole } from '../types';
 import { ArzLogo } from '../components/ArzLogo';
 import SettingsToggle from '../components/SettingsToggle';
+import { LANGUAGES } from '../components/LanguageSelector';
 
 const Settings = () => {
   const { t, i18n: i18nInstance } = useTranslation();
@@ -91,14 +92,7 @@ const Settings = () => {
     showToast(t('settings_reset_success', 'Sistem Sıfırlandı'), 'success');
   };
 
-  const languages = [
-    { id: 'tr', label: 'Türkçe', flag: '🇹🇷' },
-    { id: 'en', label: 'English', flag: '🇺🇸' },
-    { id: 'ru', label: 'Русский', flag: '🇷🇺' },
-    { id: 'de', label: 'Deutsch', flag: '🇩🇪' },
-    { id: 'az', label: 'Azərbaycan', flag: '🇦🇿' },
-    { id: 'ar', label: 'العربية', flag: '🇸🇦' },
-  ];
+
 
   const themes: { id: ThemeType; label: string; desc: string; colors: string[] }[] = [
     { id: 'afad', label: t('theme_afad'), desc: t('theme_desc_afad'), colors: ['#003366', '#ED1C24', '#020617'] },
@@ -159,49 +153,52 @@ const Settings = () => {
       case 'accessibility':
         return (
           <div className="space-y-2">
-            <SettingsToggle label="Kalın Metin" checked={displaySettings.boldText} onChange={(val) => handleToggle('display', 'boldText', val)} />
-            <SettingsToggle label="Yüksek Kontrast" checked={displaySettings.highContrast} onChange={(val) => handleToggle('display', 'highContrast', val)} />
-            <SettingsToggle label="Büyük Butonlar" checked={displaySettings.bigButtons} onChange={(val) => handleToggle('display', 'bigButtons', val)} />
-            <SettingsToggle label="Hareketleri Azalt" checked={displaySettings.reduceMotion} onChange={(val) => handleToggle('display', 'reduceMotion', val)} />
-            <SettingsToggle label="Odak Çerçevesi" checked={displaySettings.focusRing} onChange={(val) => handleToggle('display', 'focusRing', val)} />
+            <SettingsToggle label={t('toggles.boldText', 'Kalın Metin')} checked={displaySettings.boldText} onChange={(val) => handleToggle('display', 'boldText', val)} />
+            <SettingsToggle label={t('toggles.highContrast', 'Yüksek Kontrast')} checked={displaySettings.highContrast} onChange={(val) => handleToggle('display', 'highContrast', val)} />
+            <SettingsToggle label={t('toggles.largeButtons', 'Büyük Butonlar')} checked={displaySettings.bigButtons} onChange={(val) => handleToggle('display', 'bigButtons', val)} />
+            <SettingsToggle label={t('toggles.reduceMotion', 'Hareketleri Azalt')} checked={displaySettings.reduceMotion} onChange={(val) => handleToggle('display', 'reduceMotion', val)} />
+            <SettingsToggle label={t('toggles.focusRing', 'Odak Çerçevesi')} checked={displaySettings.focusRing} onChange={(val) => handleToggle('display', 'focusRing', val)} />
           </div>
         );
       case 'home_screen':
         return (
           <div className="space-y-2">
-            <SettingsToggle label="İstatistikleri Göster" checked={displaySettings.homeShowStats} onChange={(val) => handleToggle('display', 'homeShowStats', val)} />
-            <SettingsToggle label="Hızlı İşlemleri Göster" checked={displaySettings.homeShowQuickActions} onChange={(val) => handleToggle('display', 'homeShowQuickActions', val)} />
+            <SettingsToggle label={t('toggles.showStats', 'İstatistikleri Göster')} checked={displaySettings.homeShowStats} onChange={(val) => handleToggle('display', 'homeShowStats', val)} />
+            <SettingsToggle label={t('toggles.showQuickActions', 'Hızlı İşlemleri Göster')} checked={displaySettings.homeShowQuickActions} onChange={(val) => handleToggle('display', 'homeShowQuickActions', val)} />
           </div>
         );
       case 'ai':
         return (
           <div className="space-y-2">
-            <SettingsToggle label="ARZ AI Aktif" checked={aiSettings.active} onChange={(val) => handleToggle('ai', 'active', val)} />
-            <SettingsToggle label="Yerel Motor (Local Brain)" checked={aiSettings.localBrain} onChange={(val) => handleToggle('ai', 'localBrain', val)} />
-            <SettingsToggle label="Hafıza ve Öğrenme" checked={aiSettings.memory} onChange={(val) => handleToggle('ai', 'memory', val)} />
-            <SettingsToggle label="Detaylı Analiz Modu" checked={aiSettings.detailedAnalysisMode} onChange={(val) => handleToggle('ai', 'detailedAnalysisMode', val)} />
-            <SettingsToggle label="Klinik Veri Kullanımı" checked={aiSettings.useClinicalData} onChange={(val) => handleToggle('ai', 'useClinicalData', val)} />
+            <SettingsToggle label={t('toggles.aiActive', 'ARZ AI Aktif')} checked={aiSettings.active} onChange={(val) => handleToggle('ai', 'active', val)} />
+            <SettingsToggle label={t('toggles.localBrain', 'Yerel Motor (Local Brain)')} checked={aiSettings.localBrain} onChange={(val) => handleToggle('ai', 'localBrain', val)} />
+            <SettingsToggle label={t('toggles.memory', 'Hafıza ve Öğrenme')} checked={aiSettings.memory} onChange={(val) => handleToggle('ai', 'memory', val)} />
+            <SettingsToggle label={t('toggles.detailedAnalysisMode', 'Detaylı Analiz Modu')} checked={aiSettings.detailedAnalysisMode} onChange={(val) => handleToggle('ai', 'detailedAnalysisMode', val)} />
+            <SettingsToggle label={t('toggles.useClinicalData', 'Klinik Veri Kullanımı')} checked={aiSettings.useClinicalData} onChange={(val) => handleToggle('ai', 'useClinicalData', val)} />
           </div>
         );
       case 'notifications':
         return (
           <div className="space-y-2">
-            <SettingsToggle label="Tüm Bildirimler" checked={notificationSettings.enabled} onChange={(val) => handleToggle('notification', 'enabled', val)} />
-            <SettingsToggle label="Kritik Uyarılar" checked={notificationSettings.criticalAlerts} onChange={(val) => handleToggle('notification', 'criticalAlerts', val)} />
-            <SettingsToggle label="Sevkiyat Uyarıları" checked={notificationSettings.shipmentNotifications} onChange={(val) => handleToggle('notification', 'shipmentNotifications', val)} />
+            <SettingsToggle label={t('toggles.notificationsEnabled', 'Tüm Bildirimler')} checked={notificationSettings.enabled} onChange={(val) => handleToggle('notification', 'enabled', val)} />
+            <SettingsToggle label={t('toggles.criticalAlerts', 'Kritik Uyarılar')} checked={notificationSettings.criticalAlerts} onChange={(val) => handleToggle('notification', 'criticalAlerts', val)} />
+            <SettingsToggle label={t('toggles.shipmentNotifications', 'Sevkiyat Uyarıları')} checked={notificationSettings.shipmentNotifications} onChange={(val) => handleToggle('notification', 'shipmentNotifications', val)} />
           </div>
         );
       case 'language':
         return (
-          <div className="grid grid-cols-2 gap-2">
-            {languages.map(l => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {LANGUAGES.map(l => (
               <button 
                 key={l.id}
                 onClick={() => handleLangChange(l.id)}
-                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${lang === l.id ? 'selected-item' : 'border-app-border bg-app-bg hover:bg-app-card'}`}
+                className={`p-4 rounded-2xl border-2 transition-all flex items-center gap-4 ${lang === l.id ? 'selected-item' : 'border-app-border bg-app-bg hover:bg-app-card'}`}
               >
-                <span className="text-2xl">{l.flag}</span>
-                <span className="text-[10px] font-black uppercase tracking-widest">{l.label}</span>
+                <span className="text-3xl leading-none">{l.flag}</span>
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="text-[12px] font-black uppercase tracking-wider text-app-text">{l.code}</span>
+                  <span className="text-[10px] font-bold text-app-muted mt-0.5">{l.name}</span>
+                </div>
               </button>
             ))}
           </div>
@@ -230,8 +227,8 @@ const Settings = () => {
         return (
           <div className="space-y-4">
             <div className="space-y-2">
-               <h4 className="text-[10px] font-black text-app-muted uppercase tracking-widest px-1">Harita Modu</h4>
-               <div className="grid grid-cols-2 gap-2">
+               <h4 className="text-[10px] font-black text-app-muted uppercase tracking-widest px-1">{t('toggles.mapMode', 'Harita Modu')}</h4>
+               <div className="grid grid-cols-3 gap-2">
                  {['standard', 'satellite', 'operation'].map(style => (
                     <button 
                       key={style}
@@ -240,12 +237,12 @@ const Settings = () => {
                         mapSettings.mapStyle === style ? 'selected-item' : 'border-app-border bg-app-bg text-app-muted'
                       }`}
                     >
-                      {style}
+                      {t('map_style_' + style, style === 'standard' ? 'Standart' : style === 'satellite' ? 'Uydu' : 'Operasyon')}
                     </button>
-                 ))}
+                  ))}
                </div>
             </div>
-            <SettingsToggle label="Konumumu Göster" checked={mapSettings.showMyLocation} onChange={() => setMapSettings({ showMyLocation: !mapSettings.showMyLocation })} />
+            <SettingsToggle label={t('toggles.mapShowMyLocation', 'Konumumu Göster')} checked={mapSettings.showMyLocation} onChange={() => setMapSettings({ showMyLocation: !mapSettings.showMyLocation })} />
           </div>
         );
       case 'about':
