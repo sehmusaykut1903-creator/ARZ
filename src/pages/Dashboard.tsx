@@ -283,27 +283,27 @@ const Dashboard = () => {
                   </div>
                   <div className="space-y-4">
                     <h4 className="text-xl font-black text-app-text leading-tight italic uppercase tracking-tighter">
-                      Hızlı İşlem Merkezi
+                      {t('quick_action_center', 'Hızlı İşlem Merkezi')}
                     </h4>
                     <div className="flex flex-col gap-3">
                       <button onClick={() => setShowEmergencyModal(true)} className="flex items-center justify-between p-4 bg-red-50 hover:bg-red-100 border border-red-100 rounded-2xl transition-all group">
-                        <div className="flex items-center gap-3"><PhoneCall size={18} className="text-red-500" /><span className="text-xs font-black text-red-600 uppercase tracking-widest">Acil Yardım Talebi</span></div>
+                        <div className="flex items-center gap-3"><PhoneCall size={18} className="text-red-500" /><span className="text-xs font-black text-red-600 uppercase tracking-widest">{t('emergency_help', 'Acil Yardım Talebi')}</span></div>
                         <ArrowUpRight size={16} className="text-red-400 group-hover:scale-125 transition-transform" />
                       </button>
                       <button onClick={() => navigate('/field')} className="flex items-center justify-between p-4 bg-app-bg hover:bg-gray-100 border border-app-border rounded-2xl transition-all group">
-                        <div className="flex items-center gap-3"><Plus size={18} className="text-app-muted" /><span className="text-xs font-black text-gray-700 uppercase tracking-widest">Yeni Saha Bildirimi</span></div>
+                        <div className="flex items-center gap-3"><Plus size={18} className="text-app-muted" /><span className="text-xs font-black text-gray-700 uppercase tracking-widest">{t('new_field_report', 'Yeni Saha Bildirimi')}</span></div>
                         <ArrowUpRight size={16} className="text-app-muted group-hover:scale-125 transition-transform" />
                       </button>
                       <button onClick={() => navigate('/ai')} className="flex items-center justify-between p-4 bg-app-primary/10 hover:bg-blue-100 border border-blue-100 rounded-2xl transition-all group">
-                        <div className="flex items-center gap-3"><Cpu size={18} className="text-blue-500" /><span className="text-xs font-black text-app-primary uppercase tracking-widest">ARZ AI Analiz Al</span></div>
+                        <div className="flex items-center gap-3"><Cpu size={18} className="text-blue-500" /><span className="text-xs font-black text-app-primary uppercase tracking-widest">{t('ai_analysis', 'ARZ AI Analiz Al')}</span></div>
                         <ArrowUpRight size={16} className="text-blue-400 group-hover:scale-125 transition-transform" />
                       </button>
                       <button onClick={() => navigate('/map')} className="flex items-center justify-between p-4 bg-app-bg hover:bg-gray-100 border border-app-border rounded-2xl transition-all group">
-                        <div className="flex items-center gap-3"><MapIcon size={18} className="text-app-muted" /><span className="text-xs font-black text-gray-700 uppercase tracking-widest">Haritada Göster</span></div>
+                        <div className="flex items-center gap-3"><MapIcon size={18} className="text-app-muted" /><span className="text-xs font-black text-gray-700 uppercase tracking-widest">{t('show_on_map', 'Haritada Göster')}</span></div>
                         <ArrowUpRight size={16} className="text-app-muted group-hover:scale-125 transition-transform" />
                       </button>
                       <button onClick={() => setShowReportModal(true)} className="flex items-center justify-between p-4 bg-app-bg hover:bg-gray-100 border border-app-border rounded-2xl transition-all group">
-                        <div className="flex items-center gap-3"><FileText size={18} className="text-app-muted" /><span className="text-xs font-black text-gray-700 uppercase tracking-widest">Rapor Oluştur</span></div>
+                        <div className="flex items-center gap-3"><FileText size={18} className="text-app-muted" /><span className="text-xs font-black text-gray-700 uppercase tracking-widest">{t('add_report', 'Rapor Oluştur')}</span></div>
                         <ArrowUpRight size={16} className="text-app-muted group-hover:scale-125 transition-transform" />
                       </button>
                     </div>
@@ -326,20 +326,20 @@ const Dashboard = () => {
                       <div className="w-14 h-14 bg-app-primary/10 rounded-[1.5rem] flex items-center justify-center text-app-text group-hover:bg-primary group-hover:text-app-on-primary transition-colors duration-500">
                         <Zap size={24} />
                       </div>
-                      <div className="bg-blue-100/50 text-app-primary px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-blue-200">AI Özet Kartı</div>
+                      <div className="bg-blue-100/50 text-app-primary px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-blue-200">{t('ai_summary_card', 'AI Özet Kartı')}</div>
                     </div>
                     <div className="space-y-4">
                       <h4 className="text-xl font-black text-app-text leading-tight italic uppercase tracking-tighter">
-                        Günlük Risk Özeti
+                        {t('daily_risk_summary', 'Günlük Risk Özeti')}
                       </h4>
                       <div className="flex flex-col gap-2">
-                        <p className="text-app-muted text-xs font-bold leading-relaxed flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-red-500" /> Hatay/Kırıkhan (Kritik Uyarı)</p>
-                        <p className="text-app-muted text-xs font-bold leading-relaxed flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-orange-400" /> Şiddetli Yağış Uyarısı Lojistik Rota - 1</p>
-                        <p className="text-app-muted text-xs font-bold leading-relaxed flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-green-500" /> 12 Sevkiyat Başarıyla Tamamlandı</p>
+                        <p className="text-app-muted text-xs font-bold leading-relaxed flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-red-500" /> Hatay/Kırıkhan ({t('status.critical', 'Kritik')} {t('warning', 'Uyarı')})</p>
+                        <p className="text-app-muted text-xs font-bold leading-relaxed flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-orange-400" /> {t('weather_warning', 'Şiddetli Yağış Uyarısı')} {t('logistic_route', 'Lojistik Rota')} - 1</p>
+                        <p className="text-app-muted text-xs font-bold leading-relaxed flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-green-500" /> 12 {t('shipment_completed', 'Sevkiyat Başarıyla Tamamlandı')}</p>
                       </div>
                       <div className="flex items-center gap-2 pt-2">
                          <span className="w-1.5 h-1.5 rounded-full bg-app-primary/100 animate-pulse" />
-                         <span className="text-[9px] font-black text-blue-500 uppercase tracking-widest">3 Yeni Öneri Mevcut</span>
+                         <span className="text-[9px] font-black text-blue-500 uppercase tracking-widest">3 {t('new_insights', 'Yeni Öneri Mevcut')}</span>
                       </div>
                     </div>
                   </div>
@@ -352,10 +352,10 @@ const Dashboard = () => {
                        Demo Veri Kontrolü
                      </h4>
                      <div className="grid grid-cols-2 gap-2">
-                        <button onClick={() => showToast("Yozgat Pilot Senaryosu Yüklendi", "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Yozgat Pilot Senaryosu</button>
-                        <button onClick={() => showToast("Deprem Senaryosu Yüklendi", "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Deprem Senaryosu</button>
-                        <button onClick={() => showToast("Sel Senaryosu Yüklendi", "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Sel Senaryosu</button>
-                        <button onClick={() => { showToast("Demo Verileri Yenilendi", "success"); window.location.reload(); }} className="bg-app-card/10 text-app-text bg-app-card text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-primary/10 transition-all text-left">Demo Verileri Yenile</button>
+                        <button onClick={() => showToast(t('yozgat_pilot_scenario', 'Yozgat Pilot Senaryosu') + " " + t('loaded', 'Yüklendi'), "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">{t('yozgat_pilot_scenario', 'Yozgat Pilot Senaryosu')}</button>
+                        <button onClick={() => showToast(t('earthquake_scenario', 'Deprem Senaryosu') + " " + t('loaded', 'Yüklendi'), "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">{t('earthquake_scenario', 'Deprem Senaryosu')}</button>
+                        <button onClick={() => showToast(t('flood_scenario', 'Sel Senaryosu') + " " + t('loaded', 'Yüklendi'), "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">{t('flood_scenario', 'Sel Senaryosu')}</button>
+                        <button onClick={() => { showToast(t('demo_data_refreshed', 'Demo Verileri Yenilendi'), "success"); window.location.reload(); }} className="bg-app-card/10 text-app-text bg-app-card text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-primary/10 transition-all text-left">{t('refresh_demo_data', 'Demo Verileri Yenile')}</button>
                      </div>
                    </div>
                 </div>

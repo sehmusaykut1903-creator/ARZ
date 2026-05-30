@@ -250,31 +250,53 @@ const Settings = () => {
           <div className="space-y-6">
             <div className="flex flex-col items-center py-6 text-center">
                <ArzLogo variant="vertical" className="mb-4" />
-               <p className="text-[10px] font-black text-app-muted uppercase tracking-[0.3em] mt-4">Sürüm {projectIdentity.version}</p>
-               <h3 className="text-xl font-black text-app-text italic uppercase tracking-tighter mt-6">{projectIdentity.fullTitle}</h3>
-               <p className="text-xs font-bold text-app-muted uppercase italic tracking-widest mt-2">{projectIdentity.slogan}</p>
+               <p className="text-[10px] font-black text-[#E30613] uppercase tracking-[0.3em] mt-4">
+                 {t('about', 'Hakkında')}
+               </p>
+               <h3 className="text-xl font-black text-app-text italic uppercase tracking-tighter mt-4">
+                 ARZ - Afet Raporlama ve Zamanlama
+               </h3>
+               <p className="text-xs font-bold text-app-muted uppercase italic tracking-widest mt-2">
+                 {t('slogan', 'Doğru Veri, Doğru Zaman, Doğru Müdahale.')}
+               </p>
             </div>
-            <div className="bg-app-bg/50 p-8 rounded-[2.5rem] border border-app-border space-y-6">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-1">
-                     <p className="text-[9px] font-black text-app-muted uppercase tracking-widest">Baş Geliştirici</p>
-                     <p className="text-sm font-black text-app-text tracking-tight uppercase italic">{projectIdentity.leadDeveloper}</p>
-                  </div>
-                  <div className="space-y-1">
-                     <p className="text-[9px] font-black text-app-primary uppercase tracking-widest">Akademik Danışman</p>
-                     <p className="text-sm font-black text-app-text tracking-tight uppercase italic">{projectIdentity.advisor}</p>
-                  </div>
-                  <div className="space-y-1">
-                     <p className="text-[9px] font-black text-app-muted uppercase tracking-widest">Fakülte / Bölüm</p>
-                     <p className="text-xs font-bold text-app-text uppercase">{projectIdentity.institution}</p>
-                     <p className="text-[10px] font-bold text-app-muted uppercase">{projectIdentity.department}</p>
-                  </div>
-               </div>
-               <div className="pt-6 border-t border-app-border text-[9px] font-bold text-app-muted leading-relaxed uppercase tracking-widest">
-                  Bu sistem, afet anında karar destek süreçlerini optimize etmek amacıyla geliştirilmiş akademik temelli bir dijital operasyon platformudur.
-                  <br /><br />
-                  © 2026 ARZ Projekt. Tüm hakları saklıdır.
-               </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-app-bg/40 p-6 rounded-3xl border border-app-border flex flex-col justify-between">
+                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest mb-1">{t('project_name', 'Proje Adı')}</span>
+                <span className="text-sm font-black text-app-text tracking-tight uppercase italic text-app-primary">ARZ - Afet Raporlama ve Zamanlama</span>
+              </div>
+              
+              <div className="bg-app-bg/40 p-6 rounded-3xl border border-app-border flex flex-col justify-between">
+                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest mb-1">{t('developer', 'Geliştirici')}</span>
+                <span className="text-sm font-black text-app-text tracking-tight uppercase italic font-bold">Şehmus Aykut</span>
+              </div>
+
+              <div className="bg-app-bg/40 p-6 rounded-3xl border border-app-border flex flex-col justify-between">
+                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest mb-1">{t('project_team', 'Proje Ekibi')}</span>
+                <span className="text-sm font-black text-app-text tracking-tight uppercase italic font-bold">Şehmus Aykut - Aghajan Musalı</span>
+              </div>
+
+              <div className="bg-app-bg/40 p-6 rounded-3xl border border-app-border flex flex-col justify-between">
+                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest mb-1">{t('academic_advisor', 'Akademik Danışman')}</span>
+                <span className="text-sm font-black text-app-text tracking-tight uppercase italic text-red-500 font-bold">Prof. Dr. Vugar Ali TÜRKSOY</span>
+              </div>
+
+              <div className="bg-app-bg/40 p-6 rounded-3xl border border-app-border flex flex-col justify-between md:col-span-2">
+                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest mb-1">{t('institution', 'Kurum')}</span>
+                <span className="text-sm font-black text-app-text tracking-tight uppercase italic">Yozgat Bozok Üniversitesi Tıp Fakültesi</span>
+              </div>
+
+              <div className="bg-app-bg/40 p-6 rounded-3xl border border-app-border flex flex-col justify-between md:col-span-2">
+                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest mb-1">{t('version', 'Sürüm')}</span>
+                <span className="text-sm font-black text-app-text tracking-tight uppercase italic">ARZ v5.1.1 / v5.2.0 Premium</span>
+              </div>
+            </div>
+
+            <div className="bg-app-bg/50 p-6 rounded-[2rem] border border-app-border text-center">
+              <p className="text-[10px] font-bold text-app-muted uppercase tracking-widest leading-relaxed">
+                © 2026 & Şehmus Aykut Tarafından Geliştirilmiştir. Telif Hakları Saklıdır.
+              </p>
             </div>
           </div>
         );

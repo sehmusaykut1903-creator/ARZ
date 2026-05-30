@@ -35,8 +35,8 @@ const Layout = () => {
   const bottomTabs = [
     { id: 'dashboard', name: t('dashboard'), icon: LayoutDashboard, path: '/', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
     { id: 'map', name: t('map'), icon: MapIcon, path: '/map', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
-    { id: 'ai', name: 'ARZ AI', icon: Cpu, path: '/ai', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager'] },
-    { id: 'reports', name: i18n.language === 'tr' ? 'Raporlar' : 'Reports', icon: FileText, path: '/reports', roles: ['admin', 'afad_operator', 'health_personnel'] },
+    { id: 'ai', name: t('ai_center'), icon: Cpu, path: '/ai', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager'] },
+    { id: 'reports', name: t('reports'), icon: FileText, path: '/reports', roles: ['admin', 'afad_operator', 'health_personnel'] },
     { id: 'settings', name: t('settings'), icon: SettingsIcon, path: '/settings', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] }
   ];
 
@@ -75,7 +75,10 @@ const Layout = () => {
     if (path === '/volunteer') return t('volunteer');
     if (path === '/field') return t('field');
     if (path === '/public-health') return t('public_health');
-    if (path === '/ai') return 'ARZ AI';
+    if (path === '/ai') return t('ai_center');
+    if (path === '/scanner') return t('scanner');
+    if (path === '/reports') return t('reports');
+    if (path === '/profile') return t('profile');
     if (path === '/settings') return t('settings');
     return 'ARZ';
   };
