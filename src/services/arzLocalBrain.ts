@@ -90,13 +90,20 @@ export const arzLocalBrain = {
       'Saha değerlendirmesi ışığında:',
       'Merkez koordinasyon analizinde:',
       'Sistem taramasından elde edilen verilerle:',
-      'Kapsamlı risk modeli sonucunda:'
-    ][Math.floor(Math.random() * 6)];
+      'Kapsamlı risk modeli sonucunda:',
+      'Anlık saha projeksiyonu tamamlandı. Veriler:',
+      'Kritik olay günlükleri ve operasyonel veriler incelendi:',
+      'Algoritmik risk puanlama sonuçları hazır:',
+      'Operasyon merkezinden alınan son raporlar derlendi:'
+    ][Math.floor(Math.random() * 10)];
     
     let sections: { title: string; content: string }[] = [];
     let actions: string[] = [];
     let note = '';
     const province = context.selectedProvince || 'Bölge';
+
+    const provinceSuffix = ['bölgesi', 'santral sahası', 'operasyon alanı', 'sektörü', 'lokasyonu'][Math.floor(Math.random() * 5)];
+    const fullLoc = `${province} ${provinceSuffix}`;
 
     // Helper for table generation
     const generateTable = (headers: string[], rows: string[][]) => {
@@ -116,7 +123,7 @@ export const arzLocalBrain = {
     switch (intent) {
       case ArzIntent.AFET:
         sections = [
-          { title: 'DURUM ÖZETİ', content: `${province} bölgesindeki sensör verileri ve afet senaryoları doğrulandı. Sismik hareketlilik %15 artış gösterdi.` },
+          { title: 'DURUM ÖZETİ', content: `${fullLoc} sensör verileri ve afet senaryoları doğrulandı. Sismik hareketlilik %${Math.floor(Math.random() * 20) + 5} artış gösterdi.` },
           { title: 'VERİ ANALİZİ', content: generateTable(['Parametre', 'Değer', 'Durum'], [
             ['Sismik Aktivite', '4.2 Mw', 'Yükseliyor'],
             ['Yapısal Hasar', '%12', 'Kısıtlı'],
@@ -136,7 +143,7 @@ export const arzLocalBrain = {
         
       case ArzIntent.KLINIK:
         sections = [
-          { title: 'KLİNİK DURUM', content: `${province} sağlık tesislerinde acil müdahale kapasitesi %75 doluluğa ulaştı.` },
+          { title: 'KLİNİK DURUM', content: `${fullLoc} sağlık tesislerinde acil müdahale kapasitesi %${Math.floor(Math.random() * 40) + 50} doluluğa ulaştı.` },
           { title: 'KAPASİTE TABLOSU', content: generateTable(['Birim', 'Kapasite', 'Doluluk'], [
             ['Acil Servis', '50 Yatak', '%90'],
             ['Ameliyathane', '4 Oda', '%100'],
@@ -157,7 +164,7 @@ export const arzLocalBrain = {
 
       case ArzIntent.LOJISTIK:
         sections = [
-          { title: 'LOJİSTİK AKIŞI', content: `${province} ana besleme rotası üzerinde trafik yoğunluğu nedeniyle %20 gecikme yaşanıyor.` },
+          { title: 'LOJİSTİK AKIŞI', content: `${fullLoc} ana besleme rotası üzerinde trafik yoğunluğu nedeniyle %${Math.floor(Math.random() * 30) + 10} gecikme yaşanıyor.` },
           { title: 'SEVKİYAT DURUMU', content: generateTable(['Sevkiyat Türü', 'Araç Sayısı', 'Varış Tahmini'], [
             ['Gıda/Su', '12 Tır', '2 Saat'],
             ['Tıbbi Malzeme', '4 Tır', '45 Dakika'],

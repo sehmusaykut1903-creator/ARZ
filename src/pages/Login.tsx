@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Lock, 
@@ -28,10 +29,18 @@ import { UserRole } from '../types';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { RoleSelect } from '../components/RoleSelect';
 import { BrowserModal } from '../components/BrowserModal';
+import { ArzLogo } from '../components/ArzLogo';
 
 const Login = () => {
-  const { t } = useTranslation();
-  const { setUser, projectIdentity, showToast } = useAppContext();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { user, setUser, projectIdentity, showToast } = useAppContext();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
   
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   
@@ -92,6 +101,7 @@ const Login = () => {
       saveAuthSession(user, 'email', rememberMe, loginIdentity);
       showToast(t('auth.loginSuccess'), 'success');
       setUser(user);
+      navigate('/', { replace: true });
     } catch (err: any) {
       if (err.message === 'USER_NOT_FOUND') {
         setError(t('auth.userNotFound'));
@@ -144,10 +154,8 @@ const Login = () => {
 
       saveAuthSession(userData, 'email', true, regIdentity);
       showToast(t('auth.registerSuccess'), 'success');
-      
-      setTimeout(() => {
-        setUser(userData);
-      }, 800);
+      setUser(userData);
+      navigate('/', { replace: true });
     } catch (err) {
       setError(t('system.error'));
       setIsLoading(false);
@@ -156,11 +164,27 @@ const Login = () => {
 
   const handleGuest = async () => {
     setIsLoading(true);
+    setError(null);
     try {
-      const user = await loginGuest(role);
-      saveAuthSession(user, 'guest', false);
-      showToast(t('auth.guestSuccess'), 'info');
-      setUser(user);
+      // Simulate login delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      const guestId = "guest_" + Math.random().toString(36).substr(2, 9);
+      const guestUser = {
+        id: guestId,
+        name: i18n.language === 'tr' ? "Misafir Operatör" : "Guest Operator",
+        email: `guest_${guestId}@arz.local`,
+        role: role,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Guest_${guestId}`,
+        isGuest: true
+      };
+
+      saveAuthSession(guestUser, 'guest', false);
+      setUser(guestUser);
+      showToast(i18n.language === 'tr' ? 'Misafir Girişi Başarılı' : 'Guest Login Successful', 'success');
+      navigate('/', { replace: true });
+    } catch (err) {
+      setError(t('system.error'));
     } finally {
       setIsLoading(false);
     }
@@ -201,6 +225,7 @@ const Login = () => {
         showToast(t('auth.googleDemoSuccess'), 'success');
       }
       setUser(user);
+      navigate('/', { replace: true });
     } finally {
       setIsLoading(false);
     }
@@ -212,74 +237,87 @@ const Login = () => {
         
         {/* Left Panel: Corporate Info (5/12) */}
         <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-12 bg-[#003366] text-app-on-primary rounded-[3.5rem] shadow-2xl relative overflow-hidden">
-           {/* Background Accents */}
-           <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-           <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400/5 rounded-full translate-y-1/3 -translate-x-1/3 blur-3xl"></div>
+           {/* Background Accents (Subtle Gradient) */}
+           <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-[#003366] via-[#002D5E] to-[#001F3D]"></div>
+           <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
 
            <div className="relative z-10 space-y-12">
-               <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden p-2">
-                    <img src="/assets/arz-logo.png" alt="ARZ" className="w-full h-full object-contain" />
+               <div className="flex flex-col items-start gap-8">
+                  <div className="bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 shadow-xl">
+                    <ArzLogo variant="horizontal" showText={true} className="h-10 text-white" />
                   </div>
-                  <div>
-                    <h1 className="text-2xl font-black tracking-tighter leading-none italic">ARZ</h1>
-                    <p className="text-[10px] font-bold text-blue-200 uppercase tracking-widest mt-1 opacity-80">{projectIdentity.fullTitle}</p>
+                  <div className="text-left">
+                    <h1 className="text-6xl font-black tracking-tighter leading-none italic text-white flex items-baseline gap-2">
+                       ARZ <span className="text-red-600 text-3xl">OPERASYON</span>
+                    </h1>
+                    <p className="text-[11px] font-black text-blue-200 uppercase tracking-[0.4em] mt-4 opacity-70">
+                       KRİTİK AFET YÖNETİM VE VERİ SİSTEMLERİ
+                    </p>
                   </div>
                </div>
 
               <div className="space-y-6 pt-6">
-                 <h2 className="text-4xl font-black leading-tight uppercase tracking-tighter">
-                    Doğru Veri,<br />
-                    <span className="text-red-500">Doğru Zaman,</span><br />
-                    Doğru Müdahale.
+                 <h2 className="text-4xl font-black leading-tight uppercase tracking-tighter max-w-xs">
+                    DOĞRU VERI,<br />
+                    DOĞRU ZAMAN,<br />
+                    <span className="text-red-500">TAM MÜDAHALE.</span>
                  </h2>
-                 <div className="w-20 h-1.5 bg-red-600" />
-                 <p className="text-blue-100 text-base font-medium leading-relaxed italic opacity-90 max-w-sm">
+                 <div className="w-16 h-1 bg-red-600 rounded-full" />
+                 <p className="text-blue-100 text-sm font-medium leading-relaxed italic opacity-80 max-w-sm">
                     "{t('slogan')}"
                  </p>
               </div>
 
-              <div className="space-y-8 pt-10 border-t border-white/10">
+              <div className="space-y-6 pt-8 border-t border-white/5">
                  <div className="grid grid-cols-2 gap-8">
                     <div>
-                      <p className="text-[10px] text-blue-200 uppercase tracking-widest font-black mb-1 opacity-60">PROJE EKİBİ</p>
-                      <p className="font-bold text-sm tracking-tight">{projectIdentity.team}</p>
+                      <p className="text-[9px] text-blue-300/50 uppercase tracking-widest font-black mb-1">PROJE EKİBİ</p>
+                      <p className="font-bold text-xs tracking-tight">{projectIdentity.team}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] text-red-400 uppercase tracking-widest font-black mb-1 opacity-60">Lead Developer</p>
-                      <p className="font-bold text-red-100 text-sm tracking-tight">{projectIdentity.leadDeveloper}</p>
+                      <p className="text-[9px] text-red-500/50 uppercase tracking-widest font-black mb-1">SÜRÜM</p>
+                      <p className="font-bold text-xs tracking-tight text-red-100">v{projectIdentity.version}</p>
                     </div>
-                 </div>
-                 <div>
-                    <p className="text-[10px] text-blue-200 uppercase tracking-widest font-black mb-1 opacity-60">{t('project_institution')}</p>
-                    <p className="font-bold text-sm leading-relaxed opacity-90">{projectIdentity.institution}</p>
                  </div>
               </div>
            </div>
 
-           <div className="relative z-10 pt-10">
-              <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-blue-200 opacity-50">
-                 <span>{projectIdentity.name} v{projectIdentity.version}</span>
+           <div className="relative z-10">
+              <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-[0.2em] text-blue-300 opacity-40">
+                 <span>TC AFET YÖNETİMİ</span>
                  <div className="w-1 h-1 bg-blue-400 rounded-full" />
-                 <span>© 2024 Tüm Hakları Saklıdır</span>
+                 <span>© 2026</span>
               </div>
            </div>
         </div>
 
         {/* Right Panel: Auth Card (7/12) */}
-        <div className="lg:col-span-7 bg-white rounded-[3.5rem] shadow-xl p-6 md:p-14 flex flex-col border border-gray-200 relative overflow-hidden">
+        <div className="lg:col-span-7 bg-white rounded-[2.5rem] lg:rounded-[3.5rem] shadow-xl p-5 md:p-14 flex flex-col border border-gray-200 relative overflow-hidden">
             
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-10">
+            {/* Mobile Branding (only visible on small viewports) */}
+            <div className="flex lg:hidden flex-col items-center text-center gap-2 mb-6 shrink-0">
+              <div className="bg-[#003366] text-white p-2 rounded-[1rem] shadow-md flex items-center justify-center border border-white/10">
+                <ArzLogo variant="icon" className="w-8 h-8 text-white" showText={false} />
+              </div>
+              <h1 className="text-3xl font-black tracking-tighter uppercase italic text-[#003366] mt-1 leading-none">
+                ARZ <span className="text-red-600">SİSTEMİ</span>
+              </h1>
+              <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mt-1">
+                AFET RAPORLAMA VE ZAMANLAMA SİSTEMİ
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 md:mb-10 shrink-0">
                <div className="flex bg-gray-100 p-1.5 rounded-2xl w-full sm:w-fit shadow-inner border border-gray-200/50">
                  <button 
                    onClick={() => { setAuthMode('login'); setError(null); }}
-                   className={`flex-1 sm:flex-none px-10 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${authMode === 'login' ? 'bg-white text-[#003366] shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
+                   className={`flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${authMode === 'login' ? 'bg-white text-[#003366] shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
                  >
                    {t('auth.login')}
                  </button>
                  <button 
                    onClick={() => { setAuthMode('register'); setError(null); }}
-                   className={`flex-1 sm:flex-none px-10 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${authMode === 'register' ? 'bg-white text-red-600 shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
+                   className={`flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${authMode === 'register' ? 'bg-white text-red-600 shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
                  >
                    {t('auth.register')}
                  </button>
@@ -302,16 +340,16 @@ const Login = () => {
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button 
                           onClick={openEdevlet}
-                          className="w-full py-4 bg-[#003366] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-[#002244] hover:shadow-lg transition-all border-b-4 border-red-600 group"
+                          className="edevlet-login-button group"
                         >
-                          <img src="https://static.turkiye.gov.tr/themes/ankara/assets/img/logos/e-devlet-logo.png" alt="e-devlet" className="h-6 brightness-0 invert group-hover:scale-110 transition-transform" /> 
-                          {t('auth.edEvletLogin')}
+                          <span className="edevlet-emoji" aria-hidden="true">🇹🇷</span>
+                          <span className="text-[12px] uppercase tracking-widest">{t('auth.edEvletLogin')}</span>
                         </button>
                         <button 
                           onClick={openGoogle}
-                          className="w-full py-4 bg-gray-50 text-[#003366] border border-gray-200 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-white hover:shadow-lg transition-all border-b-4 border-blue-400 group"
+                          className="w-full py-4 bg-white text-[#003366] border border-gray-200 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-gray-50 hover:shadow-lg transition-all border-b-4 border-blue-400 group"
                         >
-                          <Globe size={18} className="text-blue-500 group-hover:rotate-12 transition-transform" /> 
+                          <img src="https://www.google.com/favicon.ico" alt="google" className="w-5 h-5 group-hover:rotate-12 transition-transform" /> 
                           {t('auth.mailGoogleLogin')}
                         </button>
                      </div>
@@ -321,7 +359,7 @@ const Login = () => {
                          <div className="w-full border-t border-gray-100"></div>
                        </div>
                        <div className="relative flex justify-center text-[9px] font-black uppercase tracking-widest text-gray-300">
-                         <span className="bg-white px-6">Veya Bilgilerinizle Girin</span>
+                         <span className="bg-white px-6">{t('auth.orWithCredentials')}</span>
                        </div>
                      </div>
 
@@ -511,8 +549,8 @@ const Login = () => {
             {/* Footer Notice */}
             <div className="mt-10 pt-6 border-t border-gray-100">
                <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest text-center leading-relaxed">
-                 Güvenliğiniz için tüm oturumlar ARZ Şifreleme Altyapısı ile korunmaktadır.<br />
-                 Giriş yaparak kullanım koşullarını kabul etmiş sayılırsınız.
+                 {t('auth.footerSecurityNotice')}<br />
+                 {t('auth.footerTermsNotice')}
                </p>
             </div>
          </div>

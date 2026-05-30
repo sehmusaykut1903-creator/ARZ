@@ -2,7 +2,9 @@
   "name": "ARZ - Afet Raporlama ve Zamanlama",
   "description": "Yapay Zeka Destekli Afet Yönetimi, Klinik Karar Destek, Lojistik Optimizasyon ve Gönüllü Koordinasyon Sistemi",
   "requestFramePermissions": [
-    "geolocation"
+    "geolocation",
+    "camera",
+    "microphone"
   ],
   "majorCapabilities": [
     "AI-powered disaster management",

@@ -34,7 +34,7 @@ const chartData = [
 
 const Dashboard = () => {
   const { t } = useTranslation();
-  const { reports, logistics, patients, volunteers, projectIdentity, shipments, user } = useAppContext();
+  const { reports, logistics, patients, volunteers, projectIdentity, shipments, user, showToast } = useAppContext();
   const navigate = useNavigate();
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -229,8 +229,8 @@ const Dashboard = () => {
                  <button className="bg-primary text-app-on-primary text-[10px] font-black px-6 py-3 rounded-2xl shadow-lg shadow-app-primary/20 uppercase tracking-widest">Günlük</button>
                </div>
              </div>
-             <div className="h-[350px] min-h-[350px] w-full relative overflow-hidden">
-                <ResponsiveContainer width="100%" height="100%">
+             <div className="h-[350px] min-h-[350px] w-full relative overflow-hidden" style={{ minWidth: 0 }}>
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                   <AreaChart data={chartData}>
                     <defs>
                       <linearGradient id="premiumGradient" x1="0" y1="0" x2="0" y2="1">
@@ -352,10 +352,10 @@ const Dashboard = () => {
                        Demo Veri Kontrolü
                      </h4>
                      <div className="grid grid-cols-2 gap-2">
-                        <button onClick={() => alert("Yozgat Pilot Senaryosu Yüklendi")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Yozgat Pilot Senaryosu</button>
-                        <button onClick={() => alert("Deprem Senaryosu Yüklendi")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Deprem Senaryosu</button>
-                        <button onClick={() => alert("Sel Senaryosu Yüklendi")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Sel Senaryosu</button>
-                        <button onClick={() => alert("Demo Verileri Yenilendi")} className="bg-app-card/10 text-app-text bg-app-card text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-primary/10 transition-all text-left">Demo Verileri Yenile</button>
+                        <button onClick={() => showToast("Yozgat Pilot Senaryosu Yüklendi", "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Yozgat Pilot Senaryosu</button>
+                        <button onClick={() => showToast("Deprem Senaryosu Yüklendi", "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Deprem Senaryosu</button>
+                        <button onClick={() => showToast("Sel Senaryosu Yüklendi", "info")} className="bg-app-card/20 text-app-on-primary text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-card/20 transition-all text-left">Sel Senaryosu</button>
+                        <button onClick={() => { showToast("Demo Verileri Yenilendi", "success"); window.location.reload(); }} className="bg-app-card/10 text-app-text bg-app-card text-[10px] font-black px-4 py-3 rounded-2xl uppercase tracking-widest hover:bg-app-primary/10 transition-all text-left">Demo Verileri Yenile</button>
                      </div>
                    </div>
                 </div>
@@ -480,11 +480,64 @@ const Dashboard = () => {
                         İptal Et
                       </button>
                       <button 
+                        onClick={() => { setShowEmergencyModal(false); showToast('Acil Durum Mesajı İletildi', 'success'); }}
                         className="py-5 rounded-3xl bg-secondary text-app-on-primary text-xs font-black uppercase tracking-widest shadow-xl shadow-red-500/20 hover:scale-[1.02] transition-all"
                       >
                         Bildirimi Gönder
                       </button>
                    </div>
+                </div>
+             </motion.div>
+          </div>
+        )}
+
+        {showReportModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-10">
+             <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               onClick={() => setShowReportModal(false)}
+               className="absolute inset-0 bg-[#001F3D]/90 backdrop-blur-md"
+             />
+             <motion.div 
+               initial={{ opacity: 0, scale: 0.9, y: 20 }}
+               animate={{ opacity: 1, scale: 1, y: 0 }}
+               exit={{ opacity: 0, scale: 0.9, y: 20 }}
+               className="relative bg-app-card w-full max-w-xl rounded-[3rem] p-10 shadow-premium overflow-hidden"
+             >
+                <div className="flex justify-between items-center mb-8">
+                   <h2 className="text-2xl font-black text-app-text italic uppercase tracking-tighter flex items-center gap-3">
+                      <FileText className="text-app-primary" /> Yeni Saha Raporu
+                   </h2>
+                   <button onClick={() => setShowReportModal(false)} className="p-2 hover:bg-app-bg rounded-xl text-app-muted">X</button>
+                </div>
+                <div className="space-y-4">
+                   <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                         <label className="text-[10px] font-black text-app-muted uppercase tracking-widest ml-1">Bölge</label>
+                         <input type="text" placeholder="Antakya / Merkez" className="w-full bg-app-bg border border-app-border rounded-xl p-3 text-xs font-bold" />
+                      </div>
+                      <div className="space-y-1">
+                         <label className="text-[10px] font-black text-app-muted uppercase tracking-widest ml-1">Kategori</label>
+                         <select className="w-full bg-app-bg border border-app-border rounded-xl p-3 text-xs font-bold">
+                            <option>Yaralı Bildirimi</option>
+                            <option>Lojistik İhtiyaç</option>
+                            <option>Yol Durumu</option>
+                            <option>Diğer</option>
+                         </select>
+                      </div>
+                   </div>
+                   <div className="space-y-1">
+                      <label className="text-[10px] font-black text-app-muted uppercase tracking-widest ml-1">Detaylı Açıklama</label>
+                      <textarea rows={4} className="w-full bg-app-bg border border-app-border rounded-xl p-3 text-xs font-bold" placeholder="Rapor detaylarını buraya yazınız..."></textarea>
+                   </div>
+                   <button 
+                     onClick={() => { setShowReportModal(false); showToast('Rapor Başarıyla Kaydedildi', 'success'); }}
+                     className="w-full py-4 bg-app-primary text-app-on-primary rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-app-primary/20 mt-4"
+                   >
+                      RAPORU YAYINLA
+                   </button>
                 </div>
              </motion.div>
           </div>

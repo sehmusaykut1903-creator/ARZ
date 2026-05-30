@@ -29,7 +29,7 @@ import { VolunteerStatus, VolunteerSkill, Volunteer } from '../types';
 
 const VolunteerSystem = () => {
   const { t, i18n } = useTranslation();
-  const { volunteers, reports, updateVolunteer, addNotification } = useAppContext();
+  const { volunteers, reports, updateVolunteer, addNotification, showToast } = useAppContext();
   const [filter, setFilter] = useState<VolunteerStatus | 'all'>('all');
   const [matchingResults, setMatchingResults] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -60,38 +60,56 @@ const VolunteerSystem = () => {
     [VolunteerStatus.INACTIVE]: 'bg-app-bg text-app-muted border-app-border'
   };
 
-  const findMatches = () => {
-    const matches = reports.filter(r => r.severity === 'high' || r.severity === 'critical').map(report => {
-      const neededSkillMap: any = {
-        injured: 'first_aid',
-        debris: 'search_rescue',
-        other: 'logistics',
-        water: 'logistics',
-        food: 'logistics'
-      };
-      
-      const neededSkill = neededSkillMap[report.type] || 'logistics';
-      const availableVolunteers = volunteers.filter(v => 
-        (v.status === VolunteerStatus.IDLE || v.status === VolunteerStatus.BREAK) && 
-        v.skills.includes(neededSkill as VolunteerSkill)
-      );
-      
-      return {
-        report,
-        suggestedVolunteers: availableVolunteers,
-        neededSkill
-      };
-    }).filter(m => m.suggestedVolunteers.length > 0);
+  const [isMatching, setIsMatching] = useState(false);
 
-    setMatchingResults(matches);
-    
-    if (matches.length > 0) {
-      addNotification({
-        title: 'AI Eşleşme Başarılı',
-        message: `${matches.length} vaka için uygun gönüllü ekipleri bulundu.`,
-        type: 'info'
-      });
-    }
+  const findMatches = () => {
+    setIsMatching(true);
+    setTimeout(() => {
+      const matches = reports.filter(r => r.severity === 'high' || r.severity === 'critical').map(report => {
+        const neededSkillMap: any = {
+          injured: 'first_aid',
+          debris: 'search_rescue',
+          other: 'logistics',
+          water: 'logistics',
+          food: 'logistics'
+        };
+        
+        const neededSkill = neededSkillMap[report.type] || 'logistics';
+        const availableVolunteers = volunteers.filter(v => 
+          (v.status === VolunteerStatus.IDLE || v.status === VolunteerStatus.BREAK) && 
+          v.skills.includes(neededSkill as VolunteerSkill)
+        );
+        
+        return {
+          report,
+          suggestedVolunteers: availableVolunteers,
+          neededSkill
+        };
+      }).filter(m => m.suggestedVolunteers.length > 0);
+
+      setMatchingResults(matches);
+      setIsMatching(false);
+      
+      if (matches.length > 0) {
+        showToast(`${matches.length} vaka için uygun ekipler bulundu`, 'success');
+        addNotification({
+          id: Date.now().toString(),
+          title: 'AI Eşleşme Başarılı',
+          message: `${matches.length} vaka için uygun gönüllü ekipleri bulundu.`,
+          type: 'info',
+          timestamp: Date.now(),
+          read: false
+        });
+      } else {
+        showToast('Su an aktarılacak vaka veya uygun ekip bulunamadı', 'warning');
+      }
+    }, 1500);
+  };
+
+  const handleAddVolunteer = () => {
+    // Demo implementation
+    showToast('Yeni gönüllü kaydı başarıyla oluşturuldu', 'success');
+    setShowAddModal(false);
   };
 
   return (
@@ -412,7 +430,7 @@ const VolunteerSystem = () => {
 
                     <div className="pt-6 border-t border-app-border grid grid-cols-2 gap-6">
                        <button onClick={() => setShowAddModal(false)} className="py-5 bg-gray-100 text-app-muted rounded-3xl text-xs font-black uppercase tracking-widest hover:bg-gray-200 transition-all">İPTAL</button>
-                       <button className="py-5 bg-primary text-app-on-primary rounded-3xl text-xs font-black uppercase tracking-widest shadow-premium shadow-blue-500/20 hover:scale-[1.02] transition-all">KAYDI TAMAMLA</button>
+                       <button onClick={handleAddVolunteer} className="py-5 bg-primary text-app-on-primary rounded-3xl text-xs font-black uppercase tracking-widest shadow-premium shadow-blue-500/20 hover:scale-[1.02] transition-all">KAYDI TAMAMLA</button>
                     </div>
                  </div>
               </motion.div>

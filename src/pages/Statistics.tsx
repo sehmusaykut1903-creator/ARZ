@@ -119,8 +119,8 @@ const Statistics = () => {
                  <p className="text-[9px] text-app-muted font-bold uppercase">Lojistik Akış Dağılımı</p>
               </div>
            </div>
-           <div className="flex-1 w-full">
-              <ResponsiveContainer width="100%" height="100%">
+           <div className="flex-1 w-full" style={{ minHeight: '300px', minWidth: 0 }}>
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                  <BarChart data={operationalData}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: '#94a3b8' }} />
@@ -147,8 +147,8 @@ const Statistics = () => {
                  <p className="text-[9px] text-app-muted font-bold uppercase">Müdahale Gereksinim Payı</p>
               </div>
            </div>
-           <div className="flex-1 w-full relative">
-              <ResponsiveContainer width="100%" height="100%">
+           <div className="flex-1 w-full relative" style={{ minHeight: '300px', minWidth: 0 }}>
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                  <PieChart>
                     <Pie
                       data={distributionData}
@@ -190,8 +190,8 @@ const Statistics = () => {
                  <span className="text-[10px] font-black text-green-600 uppercase tracking-widest">CANLI VERİ</span>
               </div>
            </div>
-           <div className="h-[200px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
+           <div className="h-[200px] w-full" style={{ minWidth: 0 }}>
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                  <LineChart data={[...Array(20)].map((_, i) => ({ time: i, val: Math.random() * 40 + 60 }))}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                     <XAxis hide />

@@ -145,15 +145,28 @@ export const restoreSession = (): User | null => {
 
     if (!sessionStr || !profileStr) return null;
 
-    const session = JSON.parse(sessionStr);
-    const profile = JSON.parse(profileStr);
-
-    if (!session.isAuthenticated || (session.expiresAt && session.expiresAt < Date.now())) {
+    let session;
+    try {
+      session = JSON.parse(sessionStr);
+      if (!session) return null;
+    } catch {
       logout();
       return null;
     }
 
-    return profile;
+    if (!session.isAuthenticated) return null;
+    
+    if (session.expiresAt && Date.now() > session.expiresAt) {
+      logout();
+      return null;
+    }
+
+    try {
+      return JSON.parse(profileStr);
+    } catch {
+      logout();
+      return null;
+    }
   } catch (error) {
     console.error('Session restoration failed:', error);
     logout();

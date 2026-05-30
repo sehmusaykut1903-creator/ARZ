@@ -39,8 +39,8 @@ const Sidebar = () => {
     { id: 'volunteer', name: t('volunteer'), icon: Users, path: '/volunteer', roles: ['admin', 'volunteer', 'afad_operator'] },
     { id: 'field', name: t('field'), icon: MapPin, path: '/field', roles: ['admin', 'afad_operator', 'citizen', 'volunteer'] },
     { id: 'public_health', name: t('public_health'), icon: ShieldAlert, path: '/public-health', roles: ['admin', 'health_personnel', 'afad_operator'] },
-    { id: 'ai_center', name: 'ARZ AI', icon: Cpu, path: '/ai', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager'], tooltip: 'Akıllı Asistan' },
-    { id: 'browser', name: t('browser'), icon: Scan, path: '/scanner', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer'], tooltip: 'Güvenli Tarayıcı' },
+    { id: 'ai_center', name: t('ai_center'), icon: Cpu, path: '/ai', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager'], tooltip: t('ai_center') },
+    { id: 'scanner', name: t('scanner'), icon: Scan, path: '/scanner', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer'], tooltip: t('scanner') },
     { id: 'reports', name: t('reports'), icon: FileText, path: '/reports', roles: ['admin', 'afad_operator', 'health_personnel'] },
     { id: 'profile', name: t('profile'), icon: UserCircle, path: '/profile', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
     { id: 'settings', name: t('settings'), icon: Settings, path: '/settings', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
@@ -69,9 +69,15 @@ const Sidebar = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="w-full flex justify-start pl-2"
+              className="w-full flex justify-center"
             >
-              <ArzLogo textClassName="text-app-on-primary" variant="horizontal" className="max-w-[170px]" />
+              <div className="bg-white p-4 rounded-[1.5rem] shadow-xl border border-white/10 flex items-center justify-center w-full">
+                <ArzLogo 
+                  variant="horizontal" 
+                  className="w-full" 
+                  showText={true}
+                />
+              </div>
             </motion.div>
           ) : (
             <motion.div 
@@ -81,7 +87,9 @@ const Sidebar = () => {
               exit={{ opacity: 0, scale: 0.8 }}
               className="mx-auto"
             >
-              <ArzLogo className="w-10 h-10" showText={false} variant="icon" />
+              <div className="bg-white p-2 rounded-xl shadow-md border border-white/10">
+                <ArzLogo className="w-8 h-8" showText={false} variant="icon" />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -155,12 +163,10 @@ const Sidebar = () => {
                    <ArzLogo variant="icon" className="w-7 h-7" />
                 </div>
                 <div className="overflow-hidden relative z-10 flex-1">
-                   <div className="text-[10px] font-black text-app-on-primary italic truncate uppercase tracking-tight">{user?.name || 'ARZ Operatörü'}</div>
+                   <div className="text-[10px] font-black text-app-on-primary italic truncate uppercase tracking-tight">{user?.name || t('auth.operator')}</div>
                    <div className="text-[8px] text-blue-400 font-bold uppercase tracking-widest mt-0.5 truncate flex items-center gap-1.5">
                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.5)]" />
-                     {user?.role === 'afad_operator' ? t('role_afad_operator') : 
-                      user?.role === 'health_personnel' ? t('role_health_personnel') : 
-                      t('role_' + (user?.role || 'operator'))}
+                     {user?.role ? t(`roles.${user.role}`) : t('auth.operator')}
                    </div>
                 </div>
                 <NavLink to="/profile" className="p-2 hover:bg-app-card/10 rounded-lg text-app-on-primary/40 hover:text-app-on-primary transition-colors relative z-20">

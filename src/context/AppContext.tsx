@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { UserRole, ThemeType, Report, LogisticsItem, Patient, Volunteer, HealthLog, VolunteerStatus, User, ProjectIdentity, Notification, Shipment, AISettings, DisplaySettings, MapSettings, Toast, ToastSettings } from '../types';
+import { UserRole, ThemeType, Report, LogisticsItem, Patient, Volunteer, HealthLog, VolunteerStatus, User, ProjectIdentity, Notification, Shipment, AISettings, DisplaySettings, MapSettings, Toast, ToastSettings, NotificationSettings, SecuritySettings, SoundSettings } from '../types';
 import i18n from '../lib/i18n';
 import { restoreSession, clearAuthSession } from '../services/authService';
 
@@ -7,12 +7,12 @@ export const projectIdentity: ProjectIdentity = {
   name: 'ARZ - Afet Raporlama ve Zamanlama',
   fullTitle: 'Yapay Zeka Destekli Ulusal Afet Raporlama, Zamanlama ve Karar Destek Sistemi',
   slogan: 'Doğru Veri, Doğru Zaman, Doğru Müdahale.',
-  team: 'Şehmus AYKUT & Aghajan MUSALI',
+  team: 'Şehmus AYKUT',
   institution: 'Yozgat Bozok Üniversitesi Tıp Fakültesi',
   department: 'Halk Sağlığı Anabilim Dalı',
-  advisor: 'Prof. Dr. Vugar Ali TÜRKSOY',
+  advisor: 'Doç. Dr. Ferkan SAY',
   leadDeveloper: 'Şehmus AYKUT',
-  version: 'v5.0.0 PREMIUM'
+  version: 'v5.1.1 FINAL'
 };
 
 interface AppContextType {
@@ -32,6 +32,12 @@ interface AppContextType {
   setAiSettings: (settings: Partial<AISettings>) => void;
   displaySettings: DisplaySettings;
   setDisplaySettings: (settings: Partial<DisplaySettings>) => void;
+  notificationSettings: NotificationSettings;
+  setNotificationSettings: (settings: Partial<NotificationSettings>) => void;
+  securitySettings: SecuritySettings;
+  setSecuritySettings: (settings: Partial<SecuritySettings>) => void;
+  soundSettings: SoundSettings;
+  setSoundSettings: (settings: Partial<SoundSettings>) => void;
   mapSettings: MapSettings;
   setMapSettings: (settings: Partial<MapSettings>) => void;
   toastSettings: ToastSettings;
@@ -40,6 +46,7 @@ interface AppContextType {
   showToast: (message: string, type?: Toast['type'], duration?: number) => void;
   removeToast: (id: string) => void;
   resetSettings: () => void;
+  updateSetting: (category: string, key: string, value: any) => void;
   projectIdentity: ProjectIdentity;
   reports: Report[];
   addReport: (report: Report) => void;
@@ -155,7 +162,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [aiSettings, setAiSettingsState] = useState<AISettings>(() => {
     const saved = localStorage.getItem('arz_ai_settings');
-    return saved ? JSON.parse(saved) : {
+    const defaults = {
       active: true,
       localBrain: true,
       memory: true,
@@ -165,13 +172,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       useLogisticsData: true,
       shortResponseMode: false,
       detailedAnalysisMode: true,
-      showSecurityWarnings: true
+      showSecurityWarnings: true,
+      saveChatHistory: true
     };
+    return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
   });
 
   const [displaySettings, setDisplaySettingsState] = useState<DisplaySettings>(() => {
     const saved = localStorage.getItem('arz_display_settings');
-    return saved ? JSON.parse(saved) : {
+    const defaults = {
       boldText: false,
       largeText: false,
       highContrast: false,
@@ -180,8 +189,51 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       focusRing: false,
       readableFont: true,
       colorBlindMode: 'none',
-      brightness: 100
+      brightness: 100,
+      homeShowStats: true,
+      homeShowQuickActions: true,
+      searchShowAiSummary: true,
+      searchShowHistory: true,
+      searchShowMapPreview: true
     };
+    return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
+  });
+
+  const [notificationSettings, setNotificationSettingsState] = useState<NotificationSettings>(() => {
+    const saved = localStorage.getItem('arz_notification_settings');
+    const defaults = {
+      enabled: true,
+      criticalAlerts: true,
+      clinicalAlerts: true,
+      shipmentNotifications: true,
+      volunteerNotifications: true,
+      mapEventNotifications: true,
+      aiNotifications: true,
+      lowBatteryWarning: true
+    };
+    return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
+  });
+
+  const [securitySettings, setSecuritySettingsState] = useState<SecuritySettings>(() => {
+    const saved = localStorage.getItem('arz_security_settings');
+    const defaults = {
+      locationSharing: true,
+      localEncryption: false,
+      rememberSession: true,
+      appPinEnabled: false,
+      faceIdDemo: false
+    };
+    return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
+  });
+
+  const [soundSettings, setSoundSettingsState] = useState<SoundSettings>(() => {
+    const saved = localStorage.getItem('arz_sound_settings');
+    const defaults = {
+      enabled: true,
+      vibration: true,
+      hapticFeedback: true
+    };
+    return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
   });
 
   const [mapSettings, setMapSettingsState] = useState<MapSettings>(() => {
@@ -230,14 +282,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const setAiSettings = (updates: Partial<AISettings>) => setAiSettingsState(prev => ({ ...prev, ...updates }));
   const setDisplaySettings = (updates: Partial<DisplaySettings>) => setDisplaySettingsState(prev => ({ ...prev, ...updates }));
   const setMapSettings = (updates: Partial<MapSettings>) => setMapSettingsState(prev => ({ ...prev, ...updates }));
+  const setNotificationSettings = (updates: Partial<NotificationSettings>) => setNotificationSettingsState(prev => ({ ...prev, ...updates }));
+  const setSecuritySettings = (updates: Partial<SecuritySettings>) => setSecuritySettingsState(prev => ({ ...prev, ...updates }));
+  const setSoundSettings = (updates: Partial<SoundSettings>) => setSoundSettingsState(prev => ({ ...prev, ...updates }));
+
+  const updateSetting = (category: string, key: string, value: any) => {
+    switch (category) {
+      case 'ai': setAiSettings({ [key]: value }); break;
+      case 'display': setDisplaySettings({ [key]: value }); break;
+      case 'map': setMapSettings({ [key]: value }); break;
+      case 'notification': setNotificationSettings({ [key]: value }); break;
+      case 'security': setSecuritySettings({ [key]: value }); break;
+      case 'sound': setSoundSettings({ [key]: value }); break;
+      case 'toast': setToastSettings({ [key]: value }); break;
+    }
+  };
 
   useEffect(() => {
-    // Persist all settings in a unified state if needed, or keep separate but synchronized
     localStorage.setItem('arz_ai_settings', JSON.stringify(aiSettings));
     localStorage.setItem('arz_display_settings', JSON.stringify(displaySettings));
+    localStorage.setItem('arz_notification_settings', JSON.stringify(notificationSettings));
+    localStorage.setItem('arz_security_settings', JSON.stringify(securitySettings));
+    localStorage.setItem('arz_sound_settings', JSON.stringify(soundSettings));
     localStorage.setItem('arz_map_settings', JSON.stringify(mapSettings));
     localStorage.setItem('arz_toast_settings', JSON.stringify(toastSettings));
-    localStorage.setItem('arz_settings_state', JSON.stringify({ ai: aiSettings, display: displaySettings, map: mapSettings, toast: toastSettings }));
+    
+    // Unified state for external tools/debugging
+    localStorage.setItem('arz_settings_state', JSON.stringify({ 
+      ai: aiSettings, 
+      display: displaySettings, 
+      notification: notificationSettings,
+      security: securitySettings,
+      sound: soundSettings,
+      map: mapSettings, 
+      toast: toastSettings 
+    }));
 
     // Apply accessibility classes to documentElement
     const root = document.documentElement;
@@ -247,7 +326,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       reduceMotion: 'arz-reduce-motion',
       bigButtons: 'arz-large-buttons',
       focusRing: 'arz-focus-ring',
-      readableFont: 'arz-readable-font'
+      readableFont: 'arz-readable-font',
+      largeText: 'arz-large-text'
     };
 
     Object.entries(accessibilityMap).forEach(([setting, className]) => {
@@ -265,17 +345,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // Apply data attributes for other styles
     Object.entries(displaySettings).forEach(([key, value]) => {
-      root.setAttribute(`data-${key.replace(/[A-Z]/g, m => `-${m.toLowerCase()}`)}`, value.toString());
+      if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
+        root.setAttribute(`data-${key.replace(/[A-Z]/g, m => `-${m.toLowerCase()}`)}`, value.toString());
+      }
     });
-  }, [aiSettings, displaySettings, mapSettings, toastSettings]);
+  }, [aiSettings, displaySettings, notificationSettings, securitySettings, soundSettings, mapSettings, toastSettings]);
 
   useEffect(() => {
     localStorage.setItem('arz_sidebar_collapsed', sidebarCollapsed.toString());
   }, [sidebarCollapsed]);
-
-  useEffect(() => {
-    localStorage.setItem('arz_auth_session', JSON.stringify(user));
-  }, [user]);
 
   useEffect(() => {
     localStorage.setItem('arz_volunteers', JSON.stringify(volunteers));
@@ -494,10 +572,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       textSize, setTextSize, fontFamily, setFontFamily, 
       aiSettings, setAiSettings,
       displaySettings, setDisplaySettings,
+      notificationSettings, setNotificationSettings,
+      securitySettings, setSecuritySettings,
+      soundSettings, setSoundSettings,
       mapSettings, setMapSettings,
       toastSettings, setToastSettings,
       toasts, showToast, removeToast,
-      resetSettings,
+      resetSettings, updateSetting,
       projectIdentity,
       reports, addReport, 
       logistics, addLogistics, updateLogistics,

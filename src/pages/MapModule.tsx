@@ -83,6 +83,7 @@ const MapModule = () => {
   const [zoom, setZoom] = useState(6);
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [aiResult, setAiResult] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Persistent layers logic
   useEffect(() => {
@@ -143,39 +144,41 @@ const MapModule = () => {
     
     // Dynamically update context based on map selection
     const disasterContext = mapSettings.disasterType === 'general' 
-      ? "genel afet durumu ve risk analizi" 
-      : `${mapSettings.disasterType} afeti özelinde acil durum müdahale ve risk projeksiyonu`;
+      ? (lang === 'tr' ? "genel afet durumu ve risk analizi" : "general disaster status and risk analysis")
+      : (lang === 'tr' ? `${mapSettings.disasterType} afeti özelinde acil durum müdahale ve risk projeksiyonu` : `${mapSettings.disasterType} disaster specific emergency response and risk projection`);
 
     setTimeout(() => {
-      setAiResult(`${province.name} bölgesi için ${disasterContext}: ${province.aiSuggestion}`);
+      setAiResult(`${province.name} ${t('region_suffix')}: ${province.aiSuggestion}`);
       setIsAiAnalyzing(false);
     }, 1500);
   };
 
-  const displayProvinces = mockProvinces.filter(p => {
-    if (mapSettings.disasterType === 'general') return true;
-    return p.activeDisasters.includes(mapSettings.disasterType);
+  const filteredProvinces = mockProvinces.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    if (mapSettings.disasterType === 'general') return matchesSearch;
+    return matchesSearch && p.activeDisasters.includes(mapSettings.disasterType);
   });
 
+  const displayProvinces = filteredProvinces;
+
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] bg-app-bg gap-4">
+    <div className="flex flex-col h-auto lg:h-[calc(100vh-140px)] bg-app-bg gap-3 md:gap-4 pb-20 lg:pb-0">
       {/* Top Header */}
-      <div className="bg-app-card p-4 px-6 rounded-[2.5rem] border border-app-border shadow-sm flex items-center justify-between shrink-0 z-10 w-full overflow-hidden">
-        <div className="flex items-center gap-3 shrink-0 mr-4">
-          <div className="p-2 bg-app-primary/10 text-app-primary rounded-xl">
-             <MapIcon size={20} />
+      <div className="bg-app-card p-3 md:p-4 px-4 md:px-6 rounded-2xl md:rounded-[2.5rem] border border-app-border shadow-sm flex items-center justify-between shrink-0 z-10 w-full overflow-hidden">
+        <div className="flex items-center gap-2 md:gap-3 shrink-0 mr-4">
+          <div className="p-1.5 md:p-2 bg-app-primary/10 text-app-primary rounded-xl">
+             <MapIcon size={18} />
           </div>
-          <div className="hidden sm:block">
-            <h1 className="text-sm font-black text-app-text uppercase tracking-wider">{t('map', 'AFET HARİTASI')}</h1>
-            <div className="flex items-center gap-2 text-[10px] text-app-muted font-bold uppercase tracking-widest mt-0.5">
-              <span>CANLI YAYIN VERİSİ</span>
+          <div>
+            <h1 className="text-xs md:text-sm font-black text-app-text uppercase tracking-wider">{t('map_title')}</h1>
+            <div className="flex items-center gap-1 md:gap-2 text-[8px] md:text-[10px] text-app-muted font-bold uppercase tracking-widest mt-0.5">
+              <span>{t('live_data')}</span>
               <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-              <span className="text-emerald-500 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> GÜNCEL</span>
+              <span className="text-emerald-500 flex items-center gap-1"><span className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></span> {t('up_to_date')}</span>
             </div>
           </div>
         </div>
-        
-          <div className="flex-1 flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1">
+                 <div className="flex-1 flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1">
             {disasterTypes.map(type => {
               const isActive = mapSettings.disasterType === type.id;
               return (
@@ -186,11 +189,14 @@ const MapModule = () => {
                     setSelectedProvince(null);
                     setAiResult(null);
                   }}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
-                    isActive ? 'bg-app-primary text-app-on-primary shadow-md' : 'bg-app-bg text-app-muted hover:bg-gray-100'
+                  className={`flex items-center gap-2 px-3.5 py-2 md:px-5 md:py-3 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 ${
+                    isActive 
+                      ? 'scale-105 z-10 text-white font-extrabold border-transparent' 
+                      : 'bg-app-card text-app-muted border-app-border hover:border-gray-300 hover:text-app-text shadow-sm'
                   }`}
+                  style={isActive ? { backgroundColor: 'var(--app-primary)', borderColor: 'var(--app-primary)', color: '#ffffff' } : undefined}
                 >
-                  <type.icon size={14} />
+                  <type.icon size={13} className={isActive ? 'text-white' : 'text-app-muted'} />
                   {type.label}
                 </button>
               )
@@ -200,43 +206,62 @@ const MapModule = () => {
 
       <div className="flex-1 flex flex-col lg:flex-row gap-4 min-h-0 relative">
         {/* Left Side Mapping / Filters */}
-        <div className="w-full lg:w-[280px] bg-app-card rounded-[2.5rem] border border-app-border shadow-sm flex flex-col shrink-0 overflow-hidden z-10 lg:h-full">
-          <div className="p-5 border-b border-app-border text-center lg:text-left flex items-center justify-between">
-             <h3 className="text-xs font-black text-app-text uppercase tracking-widest flex items-center justify-center lg:justify-start gap-2"><Layers size={14} /> KATMANLAR</h3>
+        <div className="w-full lg:w-[280px] bg-app-card rounded-2xl lg:rounded-[2.5rem] border border-app-border shadow-sm flex flex-col shrink-0 overflow-hidden z-10 lg:h-full">
+          <div className="p-4 border-b border-app-border space-y-3">
+             <div className="flex items-center justify-between">
+                <h3 className="text-[10px] md:text-xs font-black text-app-text uppercase tracking-widest flex items-center gap-2"><Layers size={13} /> {t('layers')}</h3>
+             </div>
+             <div className="relative">
+                <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-app-muted" />
+                <input 
+                  type="text" 
+                  placeholder={t('search_province_placeholder')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-app-bg border border-app-border rounded-xl py-2 pl-9 pr-3 text-xs font-bold focus:ring-2 focus:ring-app-primary/20 outline-none"
+                />
+             </div>
           </div>
-          <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-            <div className="p-4 space-y-2 flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-hidden gap-2 lg:gap-0">
-              {['earthquake', 'flood', 'fire', 'landslide', 'avalanche', 'storm', 'drought', 'epidemic', 'logistics', 'helpPoints'].map(layer => {
-                 const isActive = mapSettings.activeLayers.includes(layer);
+          <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col min-h-0">
+            <div className="p-4 space-y-2 flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-hidden gap-2 lg:gap-0 select-none pb-4 lg:pb-4">
+              {disasterTypes.filter(d => d.id !== 'general').map(layer => {
+                 const isActive = mapSettings.activeLayers.includes(layer.id);
                  return (
                    <button 
-                     key={layer}
+                     key={layer.id}
                      onClick={() => {
-                       setMapSettings({ 
-                         activeLayers: isActive 
-                           ? mapSettings.activeLayers.filter(l => l !== layer)
-                           : [...mapSettings.activeLayers, layer]
-                       })
+                       const newLayers = isActive 
+                        ? mapSettings.activeLayers.filter(l => l !== layer.id)
+                        : [...mapSettings.activeLayers, layer.id];
+                       setMapSettings({ activeLayers: newLayers });
                      }}
-                     className={`w-auto lg:w-full flex-shrink-0 lg:flex-shrink flex items-center justify-between p-3 rounded-2xl transition-all border border-app-border gap-4 lg:gap-0 ${
-                       isActive ? 'bg-app-primary text-app-on-primary' : 'bg-app-card text-app-muted hover:bg-app-bg'
+                     className={`w-auto lg:w-full flex-shrink-0 lg:flex-shrink flex items-center justify-between p-3.5 rounded-2xl transition-all border-2 gap-3 lg:gap-0 ${
+                       isActive 
+                        ? 'font-extrabold translate-x-0 lg:translate-x-1 border-transparent' 
+                        : 'bg-app-bg text-app-muted border-app-border/40 hover:bg-white hover:border-gray-200 shadow-sm'
                      }`}
+                     style={isActive ? { backgroundColor: 'var(--app-primary)', borderColor: 'var(--app-primary)', color: '#ffffff' } : undefined}
                    >
-                     <span className="text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">{t(`mapLayers.${layer}`)}</span>
-                     <div className={`hidden lg:block w-8 h-4 rounded-full p-0.5 transition-colors ${isActive ? 'bg-app-on-primary/20' : 'bg-gray-200'}`}>
-                       <div className={`w-3 h-3 bg-app-card rounded-full transition-transform ${isActive ? 'translate-x-4' : 'translate-x-0'}`} />
+                     <div className="flex items-center gap-2">
+                       <div className={`p-1.5 rounded-lg transition-colors ${isActive ? 'bg-white/20' : 'bg-app-card border border-app-border'}`}>
+                         <layer.icon size={14} className={isActive ? 'text-white' : 'text-app-muted'} />
+                       </div>
+                       <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest whitespace-nowrap">{t(`mapLayers.${layer.id}`)}</span>
+                     </div>
+                     <div className={`hidden lg:block w-9 h-5 rounded-full p-0.5 transition-colors ${isActive ? 'bg-white/30' : 'bg-gray-200'}`}>
+                       <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4' : 'translate-x-0'}`} />
                      </div>
                    </button>
                  )
               })}
             </div>
 
-            <div className="border-t border-app-border p-4 pt-6 mt-auto">
-               <h3 className="text-[9px] font-black text-app-muted uppercase tracking-widest flex items-center gap-2 mb-3">
-                 <ShieldAlert size={12} className="text-red-500" />
-                 KRİTİK İLLER
+            <div className="border-t border-app-border p-4 pt-4 mt-auto">
+               <h3 className="text-[8px] md:text-[9px] font-black text-app-muted uppercase tracking-widest flex items-center gap-2 mb-2">
+                 <ShieldAlert size={11} className="text-red-500" />
+                 {t('critical_provinces_label', 'Kritik İller')}
                </h3>
-               <div className="space-y-2">
+               <div className="space-y-1.5 flex flex-row lg:flex-col gap-2 lg:gap-1.5 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0">
                   {mockProvinces.filter(p => p.riskLevel === 'critical').slice(0,3).map(p => (
                      <button
                        key={p.id}
@@ -245,13 +270,13 @@ const MapModule = () => {
                           setMapCenter(p.coords);
                           setZoom(10);
                        }}
-                       className="w-full bg-red-50/50 hover:bg-red-50 p-3 rounded-2xl flex items-center justify-between transition-all"
+                       className="w-auto lg:w-full flex-shrink-0 lg:flex-shrink bg-red-50/50 hover:bg-red-50 p-2.5 px-4 lg:p-3 rounded-2xl flex items-center justify-between gap-4 lg:gap-0 transition-all border border-red-100"
                      >
                         <div className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
                           <span className="text-[10px] font-black text-red-700 uppercase tracking-widest">{p.name}</span>
                         </div>
-                        <ChevronRight size={14} className="text-red-400" />
+                        <ChevronRight size={13} className="text-red-400 hidden lg:block" />
                      </button>
                   ))}
                </div>
@@ -260,7 +285,7 @@ const MapModule = () => {
         </div>
 
         {/* Main Map Content */}
-        <div className="flex-1 relative rounded-[3rem] overflow-hidden shadow-premium border border-app-border z-0 h-[400px] lg:h-auto" style={{ filter: `brightness(${mapSettings.brightness}%) contrast(${mapSettings.contrast}%)` }}>
+        <div className="flex-1 relative rounded-2xl lg:rounded-[3rem] overflow-hidden shadow-premium border border-app-border z-0 h-[280px] lg:h-auto" style={{ filter: `brightness(${mapSettings.brightness}%) contrast(${mapSettings.contrast}%)` }}>
           <MapContainer 
             center={mapCenter} 
             zoom={zoom} 
@@ -300,7 +325,7 @@ const MapModule = () => {
                       
                       <div className="space-y-2 mb-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-[9px] text-app-muted font-bold uppercase">RİSK</span>
+                          <span className="text-[9px] text-app-muted font-bold uppercase">{t('risk_score')}</span>
                           <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded whitespace-nowrap ${
                             p.riskLevel === 'critical' ? 'bg-red-600 text-white' : 
                             p.riskLevel === 'high' ? 'bg-orange-500 text-white' : 
@@ -309,7 +334,7 @@ const MapModule = () => {
                           }`}>{p.riskLevel}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[9px] text-app-muted font-bold uppercase">BİLDİRİM</span>
+                          <span className="text-[9px] text-app-muted font-bold uppercase">{t('reports_count')}</span>
                           <span className="text-[9px] font-black text-gray-700">{p.activeReportsCount}</span>
                         </div>
                       </div>
@@ -322,7 +347,7 @@ const MapModule = () => {
                         className="w-full flex items-center justify-center gap-2 py-2.5 bg-app-primary/10 text-app-primary rounded-xl hover:bg-app-primary hover:text-app-on-primary transition-all text-[9px] font-black uppercase tracking-widest"
                       >
                         <Info size={12} />
-                        DETAYLARI GÖR
+                        {t('view_details')}
                       </button>
                     </div>
                   </Popup>
@@ -359,13 +384,14 @@ const MapModule = () => {
         <AnimatePresence>
           {selectedProvince && (
               <motion.div 
-                initial={{ y: "100%", opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: "100%", opacity: 0 }}
+                initial={{ x: "100%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: "100%", opacity: 0 }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="absolute bottom-0 sm:top-0 right-0 h-[70%] sm:h-full w-full sm:w-[350px] bg-app-card rounded-t-[3rem] sm:rounded-l-[3rem] sm:rounded-tr-[3rem] border-t sm:border-t-0 sm:border-l border-app-border shadow-[0_-10px_50px_rgba(0,0,0,0.1)] flex flex-col z-[1010] overflow-hidden"
+                className="hidden lg:flex absolute bottom-0 sm:top-0 right-0 h-full w-[350px] bg-app-card rounded-l-[3rem] border-l border-app-border shadow-[0_-10px_50px_rgba(0,0,0,0.1)] flex-col z-[1010] overflow-hidden"
               >
-              <div className="bg-gradient-to-br from-[#002D5E] to-[#001F3D] p-8 text-app-on-primary relative overflow-hidden shrink-0">
+              <div className="bg-gradient-to-br from-[#002D5E] to-[#001F3D] p-8 text-app-on-primary relative overflow-hidden shrink-0"
+                   style={{ backgroundImage: 'linear-gradient(to bottom right, var(--app-primary), #001f3d)' }}>
                 <div className="absolute top-0 right-0 w-40 h-40 bg-app-card/5 rounded-full blur-3xl -mr-10 -mt-10"></div>
                 <button 
                    onClick={() => setSelectedProvince(null)}
@@ -373,12 +399,12 @@ const MapModule = () => {
                 >
                   <ChevronRight size={20} />
                 </button>
-                <h2 className="text-[10px] font-black text-blue-200 uppercase tracking-[0.2em]">{selectedProvince.region} BÖLGESİ</h2>
+                <h2 className="text-[10px] font-black text-blue-200 uppercase tracking-[0.2em]">{selectedProvince.region} {t('region_suffix')}</h2>
                 <h1 className="text-3xl font-black italic tracking-tighter mt-1">{selectedProvince.name}</h1>
                 <div className="flex gap-2 mt-5 flex-wrap">
                   {selectedProvince.activeDisasters.map(d => (
                     <span key={d} className="px-3 py-1.5 bg-app-card/10 border border-white/20 text-[9px] font-black uppercase tracking-widest rounded-xl">
-                      {t(d, d)}
+                      {t(`mapLayers.${d}`)}
                     </span>
                   ))}
                 </div>
@@ -387,31 +413,31 @@ const MapModule = () => {
               <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-app-bg/50">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-app-card p-5 rounded-[2rem] border border-app-border shadow-sm flex flex-col justify-between hover:shadow-md transition-all group">
-                    <div className="text-[9px] text-app-muted font-black uppercase tracking-widest flex items-center justify-between">RİSK SKORU <Activity size={12} className="text-app-muted" /></div>
+                    <div className="text-[9px] text-app-muted font-black uppercase tracking-widest flex items-center justify-between">{t('risk_score')} <Activity size={12} className="text-app-muted" /></div>
                     <div className={`text-3xl font-black mt-3 ${
                       selectedProvince.riskScore > 80 ? 'text-red-500' : 
                       selectedProvince.riskScore > 50 ? 'text-orange-500' : 'text-emerald-500'
                     }`}>{selectedProvince.riskScore}</div>
                   </div>
                   <div className="bg-app-card p-5 rounded-[2rem] border border-app-border shadow-sm flex flex-col justify-between hover:shadow-md transition-all group">
-                    <div className="text-[9px] text-app-muted font-black uppercase tracking-widest flex items-center justify-between">BİLDİRİM <MapPin size={12} className="text-app-muted" /></div>
+                    <div className="text-[9px] text-app-muted font-black uppercase tracking-widest flex items-center justify-between">{t('reports_count')} <MapPin size={12} className="text-app-muted" /></div>
                     <div className="text-2xl font-black text-app-text mt-3">{selectedProvince.activeReportsCount}</div>
                   </div>
                 </div>
 
                 <div className="bg-app-card p-6 rounded-[2rem] border border-app-border shadow-sm space-y-4">
                   <div>
-                    <h4 className="text-[9px] text-app-muted font-black uppercase tracking-widest mb-1.5 flex items-center gap-2"><Navigation size={12}/> YOL DURUMU</h4>
+                    <h4 className="text-[9px] text-app-muted font-black uppercase tracking-widest mb-1.5 flex items-center gap-2"><Navigation size={12}/> {t('road_status')}</h4>
                     <p className="text-xs font-bold text-app-text">{selectedProvince.roadStatus}</p>
                   </div>
                   <div className="h-px bg-app-bg my-3"></div>
                   <div>
-                    <h4 className="text-[9px] text-app-muted font-black uppercase tracking-widest mb-1.5 flex items-center gap-2"><CloudLightning size={12} /> HAVA DURUMU</h4>
+                    <h4 className="text-[9px] text-app-muted font-black uppercase tracking-widest mb-1.5 flex items-center gap-2"><CloudLightning size={12} /> {t('weather_label')}</h4>
                     <p className="text-xs font-bold text-app-text">{selectedProvince.weather}</p>
                   </div>
                   <div className="h-px bg-app-bg my-3"></div>
                   <div>
-                    <h4 className="text-[9px] text-app-muted font-black uppercase tracking-widest mb-1.5 flex items-center gap-2"><Truck size={12} /> LOJİSTİK ÖNCELİK</h4>
+                    <h4 className="text-[9px] text-app-muted font-black uppercase tracking-widest mb-1.5 flex items-center gap-2"><Truck size={12} /> {t('logistics_priority_label')}</h4>
                     <p className={`text-xs font-bold ${
                       selectedProvince.logisticsPriority.includes('Maks') || selectedProvince.logisticsPriority.includes('Aci') || selectedProvince.logisticsPriority.includes('Kri')
                         ? 'text-red-600' : 'text-app-primary'
@@ -422,27 +448,28 @@ const MapModule = () => {
                 {/* AI Assistant Section */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50/30 p-6 rounded-[2rem] border border-blue-100/50 shadow-sm relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-app-primary/100/5 rounded-full blur-xl transition-all group-hover:bg-app-primary/100/10"></div>
-                  <h3 className="flex items-center gap-2 text-xs font-black text-[#002D5E] uppercase tracking-widest mb-4">
+                  <h3 className="flex items-center gap-2 text-xs font-black text-app-primary uppercase tracking-widest mb-4">
                     <Zap size={14} className="text-blue-500" />
-                    ARZ AI BÖLGE ANALİZİ
+                    {t('ai_analysis_title')}
                   </h3>
                   
                   {isAiAnalyzing ? (
                     <div className="flex flex-col items-center justify-center py-6 gap-4 bg-app-card/50 rounded-[1.5rem]">
                       <div className="w-8 h-8 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-                      <span className="text-[10px] text-app-primary font-black uppercase tracking-[0.2em] animate-pulse">Yerel Veriler İşleniyor...</span>
+                      <span className="text-[10px] text-app-primary font-black uppercase tracking-[0.2em] animate-pulse">{t('processing_data')}</span>
                     </div>
                   ) : aiResult ? (
                     <div className="text-xs text-app-text font-medium leading-relaxed bg-app-card p-5 rounded-[1.5rem] border border-blue-100 shadow-sm relative z-10">
-                       <span className="absolute -top-2 left-6 px-3 py-0.5 bg-blue-100 text-[8px] font-black text-app-primary uppercase tracking-widest rounded-full">{selectedProvince.name} Raporu</span>
+                       <span className="absolute -top-2 left-6 px-3 py-0.5 bg-blue-100 text-[8px] font-black text-app-primary uppercase tracking-widest rounded-full">{selectedProvince.name} {t('reports_count')}</span>
                        {aiResult}
                     </div>
                   ) : (
                     <button 
                       onClick={() => handleAiAnalysis(selectedProvince)}
                       className="w-full bg-app-primary hover:bg-black text-app-on-primary p-5 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-app-primary/20 active:scale-95 transition-all flex items-center justify-center gap-3 relative z-10"
+                      style={{ backgroundColor: 'var(--app-primary)' }}
                     >
-                      BÖLGESEL HIZLI ANALİZ BAŞLAT
+                      {t('start_regional_analysis')}
                     </button>
                   )}
                 </div>
@@ -450,7 +477,90 @@ const MapModule = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
       </div>
+
+      {/* On Mobile: Inline Information Card below Map */}
+      <AnimatePresence>
+        {selectedProvince && (
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 15 }}
+            className="flex lg:hidden flex-col bg-app-card rounded-2xl border border-app-border shadow-md overflow-hidden shrink-0 mt-2"
+          >
+            {/* Header banner */}
+            <div className="bg-gradient-to-br from-[#002D5E] to-[#001F3D] p-5 text-app-on-primary relative overflow-hidden"
+                 style={{ backgroundImage: 'linear-gradient(to bottom right, var(--app-primary), #001f3d)' }}>
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-[8px] font-black text-blue-200 uppercase tracking-widest">{selectedProvince.region} {t('region_suffix')}</h2>
+                  <h1 className="text-xl font-black italic tracking-tight">{selectedProvince.name}</h1>
+                </div>
+                <button 
+                  onClick={() => setSelectedProvince(null)}
+                  className="p-1.5 bg-white/10 hover:bg-white/25 rounded-lg transition-all"
+                >
+                  <Minimize2 size={14} />
+                </button>
+              </div>
+              <div className="flex gap-1.5 mt-3 flex-wrap">
+                {selectedProvince.activeDisasters.map(d => (
+                  <span key={d} className="px-2 py-0.5 bg-white/10 border border-white/15 text-[8px] font-black uppercase tracking-wider rounded-md">
+                    {t(`mapLayers.${d}`)}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Details body */}
+            <div className="p-4 space-y-4 bg-app-bg/50">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-app-card p-3 rounded-xl border border-app-border flex items-center justify-between">
+                  <span className="text-[8px] text-app-muted font-black uppercase tracking-wider">{t('risk_score')}</span>
+                  <span className={`text-xs font-black ${selectedProvince.riskScore > 80 ? 'text-red-500' : 'text-emerald-500'}`}>{selectedProvince.riskScore}</span>
+                </div>
+                <div className="bg-app-card p-3 rounded-xl border border-app-border flex items-center justify-between">
+                  <span className="text-[8px] text-app-muted font-black uppercase tracking-wider">{t('reports_count')}</span>
+                  <span className="text-xs font-black text-app-text">{selectedProvince.activeReportsCount}</span>
+                </div>
+              </div>
+
+              <div className="bg-app-card p-4 rounded-xl border border-app-border space-y-2 text-[10px] font-bold">
+                <div className="flex justify-between"><span className="text-app-muted uppercase tracking-wider">{t('road_status')}</span> <span>{selectedProvince.roadStatus}</span></div>
+                <div className="h-px bg-app-border/40" />
+                <div className="flex justify-between"><span className="text-app-muted uppercase tracking-wider">{t('weather_label')}</span> <span>{selectedProvince.weather}</span></div>
+                <div className="h-px bg-app-border/40" />
+                <div className="flex justify-between"><span className="text-app-muted uppercase tracking-wider">{t('logistics_priority_label')}</span> <span className="text-red-500 font-black">{selectedProvince.logisticsPriority}</span></div>
+              </div>
+
+              {/* AI assistant prompt */}
+              <div className="bg-gradient-to-br from-blue-50/50 to-indigo-50/20 p-4 rounded-xl border border-blue-100 flex flex-col gap-2">
+                <div className="text-[9px] font-black text-blue-700 uppercase tracking-widest flex items-center gap-1.5"><Zap size={10} /> {t('ai_analysis_title')}</div>
+                
+                {isAiAnalyzing ? (
+                  <div className="flex items-center justify-center p-3 gap-2 bg-white/70 rounded-lg">
+                    <div className="w-4 h-4 border border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
+                    <span className="text-[8px] text-app-primary font-black uppercase tracking-wider">{t('processing_data')}</span>
+                  </div>
+                ) : aiResult ? (
+                  <div className="text-[10px] text-app-text leading-relaxed bg-white p-3 rounded-lg border border-blue-100 shadow-sm">
+                    {aiResult}
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => handleAiAnalysis(selectedProvince)}
+                    className="w-full bg-app-primary text-white p-3 rounded-lg font-black text-[9px] uppercase tracking-widest text-center"
+                    style={{ backgroundColor: 'var(--app-primary)' }}
+                  >
+                    {t('start_regional_analysis')}
+                  </button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -79,6 +79,7 @@ export interface User {
   email: string;
   role: UserRole;
   avatar?: string;
+  loginMethod?: 'guest' | 'edevlet' | 'google' | 'standard';
   preferences?: UserPreferences;
 }
 
@@ -154,6 +155,7 @@ export interface AISettings {
   shortResponseMode: boolean;
   detailedAnalysisMode: boolean;
   showSecurityWarnings: boolean;
+  saveChatHistory: boolean;
 }
 
 export interface DisplaySettings {
@@ -166,6 +168,36 @@ export interface DisplaySettings {
   readableFont: boolean;
   colorBlindMode: string;
   brightness: number;
+  homeShowStats: boolean;
+  homeShowQuickActions: boolean;
+  searchShowAiSummary: boolean;
+  searchShowHistory: boolean;
+  searchShowMapPreview: boolean;
+}
+
+export interface NotificationSettings {
+  enabled: boolean;
+  criticalAlerts: boolean;
+  clinicalAlerts: boolean;
+  shipmentNotifications: boolean;
+  volunteerNotifications: boolean;
+  mapEventNotifications: boolean;
+  aiNotifications: boolean;
+  lowBatteryWarning: boolean;
+}
+
+export interface SecuritySettings {
+  locationSharing: boolean;
+  localEncryption: boolean;
+  rememberSession: boolean;
+  appPinEnabled: boolean;
+  faceIdDemo: boolean;
+}
+
+export interface SoundSettings {
+  enabled: boolean;
+  vibration: boolean;
+  hapticFeedback: boolean;
 }
 
 export interface ToastSettings {

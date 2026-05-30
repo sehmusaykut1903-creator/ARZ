@@ -81,7 +81,7 @@ const ClinicalSupport = () => {
               </div>
               <div>
                  <h1 className="text-2xl font-black text-[#003366] tracking-tight">{t('clinical')}</h1>
-                 <p className="text-[10px] text-app-muted font-extrabold uppercase tracking-widest mt-0.5">Klinik Karar Destek Modülü • AI Triage Protocol</p>
+                 <p className="text-[10px] text-app-muted font-extrabold uppercase tracking-widest mt-0.5">{t('clinical_subtitle')}</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -95,11 +95,11 @@ const ClinicalSupport = () => {
       <div className="xl:col-span-5 space-y-6">
         <div className="bg-app-card p-8 rounded-[2.5rem] shadow-xl border border-app-border space-y-8">
           <div className="space-y-6">
-            <h3 className="text-sm font-black text-[#003366] uppercase tracking-[0.2em]">{t('status.stable')} Veri Girişi</h3>
+            <h3 className="text-sm font-black text-[#003366] uppercase tracking-[0.2em]">{t('data_entry')}</h3>
             
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">NABIZ (bpm)</label>
+                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">{t('pulse')}</label>
                 <div className="relative group">
                   <Heart className="absolute left-4 top-1/2 -translate-y-1/2 text-red-400 transition-transform group-focus-within:scale-110" size={18} />
                   <input 
@@ -112,7 +112,7 @@ const ClinicalSupport = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">TANSİYON (mmHg)</label>
+                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">{t('blood_pressure')}</label>
                 <div className="relative group">
                   <Activity className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 transition-transform group-focus-within:scale-110" size={18} />
                   <input 
@@ -125,7 +125,7 @@ const ClinicalSupport = () => {
                 </div>
               </div>
                <div className="space-y-2">
-                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">SPO2 (%)</label>
+                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">{t('spo2')}</label>
                 <div className="relative group">
                   <ActivitySquare className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-500 transition-transform group-focus-within:scale-110" size={18} />
                   <input 
@@ -138,7 +138,7 @@ const ClinicalSupport = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">ATEŞ (°C)</label>
+                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">{t('temperature_label')}</label>
                 <div className="relative group">
                   <Thermometer className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500 transition-transform group-focus-within:scale-110" size={18} />
                   <input 
@@ -155,7 +155,7 @@ const ClinicalSupport = () => {
 
             <div className="space-y-4 pt-4 border-t border-app-border">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">Kronik Hastalıklar</label>
+                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">{t('chronic_diseases')}</label>
                 <div className="relative">
                    <ClipboardList className="absolute left-4 top-4 text-app-muted" size={18} />
                    <textarea 
@@ -163,13 +163,13 @@ const ClinicalSupport = () => {
                     onChange={e => setForm({...form, chronicDiseases: e.target.value})}
                     rows={2}
                     className="w-full bg-app-bg border border-app-border rounded-2xl pl-12 pr-4 py-3 text-sm font-bold focus:ring-4 focus:ring-blue-500/5 focus:bg-app-card outline-none transition-all resize-none"
-                    placeholder="Diyabet, HT, KOAH..."
+                    placeholder={i18n.language === 'tr' ? 'Diyabet, HT, KOAH...' : 'Diabetes, HT, COPD...'}
                   />
                 </div>
               </div>
 
                <div className="space-y-2">
-                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">İlaç Geçmişi</label>
+                <label className="text-[10px] font-black text-app-muted uppercase tracking-widest">{t('medication_history')}</label>
                 <div className="relative">
                    <Pill className="absolute left-4 top-4 text-app-muted" size={18} />
                    <textarea 
@@ -177,7 +177,7 @@ const ClinicalSupport = () => {
                     onChange={e => setForm({...form, medicationHistory: e.target.value})}
                     rows={2}
                     className="w-full bg-app-bg border border-app-border rounded-2xl pl-12 pr-4 py-3 text-sm font-bold focus:ring-4 focus:ring-blue-500/5 focus:bg-app-card outline-none transition-all resize-none"
-                    placeholder="Kullandığı kritik ilaçlar..."
+                    placeholder={i18n.language === 'tr' ? 'Kullandığı kritik ilaçlar...' : 'Critical medications...'}
                   />
                 </div>
               </div>
@@ -191,7 +191,7 @@ const ClinicalSupport = () => {
               className="flex-1 bg-[#001F3D] hover:bg-black text-app-on-primary px-6 py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-widest shadow-xl shadow-app-primary/20 active:scale-95 transition-all flex items-center justify-center gap-3 group disabled:opacity-50"
             >
               {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <BrainCircuit size={20} className="group-hover:rotate-12 transition-transform" />}
-              AI ANALİZ AL
+              {t('ai_analysis_bt')}
             </button>
             {aiResult && (
               <button 
@@ -210,7 +210,7 @@ const ClinicalSupport = () => {
       <div className="xl:col-span-7 space-y-8">
         <h2 className="text-xl font-black text-[#003366] flex items-center gap-3 tracking-tight italic">
           <ShieldAlert className="text-[#ED1C24]" size={24} />
-          {i18n.language === 'tr' ? 'AI ANALİZ & TRİAJ PROTOKOLÜ' : 'AI ANALYSIS & TRIAGE PROTOCOL'}
+          {t('ai_analysis_title_clinical')}
         </h2>
 
         {aiResult ? (
@@ -226,7 +226,7 @@ const ClinicalSupport = () => {
             <div className="relative z-10 space-y-8">
                <div className="flex justify-between items-start">
                   <div>
-                    <span className="text-[10px] font-black text-app-muted uppercase tracking-[0.2em] mb-2 block">{i18n.language === 'tr' ? 'ÖNERİLEN TRİAJ' : 'RECOMMENDED TRIAGE'}</span>
+                    <span className="text-[10px] font-black text-app-muted uppercase tracking-[0.2em] mb-2 block">{t('recommended_triage')}</span>
                     <h3 className={`text-4xl font-black italic uppercase tracking-tighter ${
                       aiResult.riskLevel === 'critical' ? 'text-[#ED1C24]' : 'text-[#003366]'
                     }`}>
@@ -241,11 +241,11 @@ const ClinicalSupport = () => {
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <p className="text-[10px] font-black text-app-muted uppercase tracking-widest border-b border-app-border pb-2">KLİNİK ANALİZ</p>
+                    <p className="text-[10px] font-black text-app-muted uppercase tracking-widest border-b border-app-border pb-2">{t('clinical_analysis')}</p>
                     <p className="text-sm text-app-muted leading-relaxed font-bold italic">"{aiResult.analysis}"</p>
                   </div>
                   <div className="space-y-4">
-                    <p className="text-[10px] font-black text-app-muted uppercase tracking-widest border-b border-app-border pb-2">ACİL AKSİYONLAR</p>
+                    <p className="text-[10px] font-black text-app-muted uppercase tracking-widest border-b border-app-border pb-2">{t('emergency_actions')}</p>
                     <div className="space-y-2">
                        {aiResult.actions.map((act, i) => (
                          <div key={i} className="bg-app-bg p-3 rounded-xl border border-app-border flex items-center gap-3">
@@ -274,7 +274,7 @@ const ClinicalSupport = () => {
                 <BrainCircuit className="text-app-muted" size={48} />
              </div>
              <p className="text-app-muted font-black italic uppercase tracking-widest text-sm leading-relaxed">
-               {i18n.language === 'tr' ? 'Analiz için vital bulguları giriniz' : 'Enter vitals to start AI analysis'}<br/>
+               {t('enter_vitals_to_analyze')}<br/>
                <span className="text-[10px] not-italic opacity-60">LMM CORE 1.5 IS READY</span>
              </p>
           </div>
@@ -283,12 +283,12 @@ const ClinicalSupport = () => {
         {/* History Area */}
         <div className="bg-app-card rounded-[2.5rem] border border-app-border shadow-sm overflow-hidden h-[400px] flex flex-col">
            <div className="p-6 bg-[#003366] text-app-on-primary flex justify-between items-center shrink-0">
-              <h3 className="text-xs font-black uppercase tracking-[0.2em]">{i18n.language === 'tr' ? 'SON DEĞERLENDİRMELER' : 'RECENT EVALUATIONS'}</h3>
+              <h3 className="text-xs font-black uppercase tracking-[0.2em]">{t('recent_evaluations')}</h3>
               <History size={16} className="opacity-50" />
            </div>
            <div className="flex-1 overflow-y-auto custom-scrollbar divide-y divide-gray-50">
               {patients.length === 0 && (
-                <div className="p-10 text-center text-app-muted text-xs font-bold uppercase tracking-widest italic">Kayıt Bulunmamaktadır</div>
+                <div className="p-10 text-center text-app-muted text-xs font-bold uppercase tracking-widest italic">{t('no_records')}</div>
               )}
               {patients.map(p => (
                 <div key={p.id} className="p-5 flex items-center justify-between hover:bg-app-bg transition-colors group">

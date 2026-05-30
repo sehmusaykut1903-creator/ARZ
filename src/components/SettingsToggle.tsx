@@ -31,18 +31,22 @@ const SettingsToggle: React.FC<SettingsToggleProps> = ({
       </div>
       
       <div className="flex items-center gap-4">
-        <span className={`text-[10px] font-black uppercase tracking-widest hidden sm:block ${checked ? 'text-[#002D5E]' : 'text-app-muted'}`}>
+        <span 
+          className="text-[10px] font-black uppercase tracking-widest hidden sm:block"
+          style={checked ? { color: 'var(--app-primary)' } : { color: 'var(--app-muted)' }}
+        >
           {checked ? t('on') : t('off')}
         </span>
         
         <button
           onClick={() => onChange(!checked)}
           disabled={disabled}
-          className={`relative w-14 h-7 rounded-full transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 cursor-pointer border shadow-inner ${
+          className={`relative w-14 h-7 rounded-full transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/20 cursor-pointer border shadow-inner ${
             checked 
-            ? 'bg-[#002D5E] border-[#002D5E] shadow-[#002D5E]/10' 
-            : 'bg-slate-300 border-slate-400'
+            ? 'shadow-primary/10' 
+            : 'bg-slate-200 border-slate-300'
           }`}
+          style={checked ? { backgroundColor: 'var(--app-primary)', borderColor: 'var(--app-primary)' } : undefined}
         >
           <motion.div
             animate={{ x: checked ? 28 : 4 }}
