@@ -10,7 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LogOut, User as UserIcon, Bell, Search, Info, ShieldAlert,
   LayoutDashboard, Map as MapIcon, Cpu, FileText, Settings as SettingsIcon,
-  MoreVertical, Palette, PhoneCall, Check, Truck, ChevronRight
+  MoreVertical, Palette, PhoneCall, Check, Truck, ChevronRight, Globe as GlobeIcon,
+  Stethoscope, Users, MapPin, Scan, UserCircle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import i18n from '../lib/i18n';
@@ -40,7 +41,7 @@ const Layout = () => {
   }, []);
 
   const bottomTabs = [
-    { id: 'dashboard', name: t('panel', 'Panel'), icon: LayoutDashboard, path: '/', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
+    { id: 'dashboard', name: t('dashboard', 'Panel'), icon: LayoutDashboard, path: '/', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
     { id: 'map', name: t('map', 'Harita'), icon: MapIcon, path: '/map', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
     { id: 'ai', name: t('ai_center', 'ARZ AI'), icon: Cpu, path: '/ai', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager'] },
     { id: 'reports', name: t('reports', 'Raporlar'), icon: FileText, path: '/reports', roles: ['admin', 'afad_operator', 'health_personnel'] },
@@ -48,6 +49,23 @@ const Layout = () => {
   ];
 
   const visibleBottomTabs = bottomTabs;
+
+  const allNavItems = [
+    { id: 'dashboard', name: t('dashboard', 'Panel'), icon: LayoutDashboard, path: '/', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
+    { id: 'clinical', name: t('clinical', 'Klinik Destek'), icon: Stethoscope, path: '/clinical', roles: ['admin', 'health_personnel'] },
+    { id: 'logistics', name: t('logistics', 'Lojistik'), icon: Truck, path: '/logistics', roles: ['admin', 'logistics_manager'] },
+    { id: 'map', name: t('map', 'Harita'), icon: MapIcon, path: '/map', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
+    { id: 'volunteer', name: t('volunteer', 'Gönüllü Sistemi'), icon: Users, path: '/volunteer', roles: ['admin', 'volunteer', 'afad_operator'] },
+    { id: 'field', name: t('field', 'Saha Bildirimi'), icon: MapPin, path: '/field', roles: ['admin', 'afad_operator', 'citizen', 'volunteer'] },
+    { id: 'public_health', name: t('public_health', 'Halk Sağlığı'), icon: ShieldAlert, path: '/public-health', roles: ['admin', 'health_personnel', 'afad_operator'] },
+    { id: 'ai_center', name: t('ai_center', 'ARZ AI'), icon: Cpu, path: '/ai', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager'] },
+    { id: 'scanner', name: t('scanner', 'Tarama Merkezi'), icon: Scan, path: '/scanner', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer'] },
+    { id: 'reports', name: t('reports', 'Raporlar'), icon: FileText, path: '/reports', roles: ['admin', 'afad_operator', 'health_personnel'] },
+    { id: 'profile', name: t('profile', 'Profil'), icon: UserCircle, path: '/profile', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
+    { id: 'settings', name: t('settings', 'Ayarlar'), icon: SettingsIcon, path: '/settings', roles: ['admin', 'health_personnel', 'afad_operator', 'logistics_manager', 'volunteer', 'citizen'] },
+  ];
+
+  const allowedNavItems = allNavItems.filter(item => user?.role && item.roles.includes(user.role));
 
   const languages = [
     { id: 'tr', code: 'TR', name: 'Türkçe', flag: '🇹🇷' },
@@ -140,7 +158,7 @@ const Layout = () => {
             <div className="flex items-center gap-6">
               <button 
                 onClick={() => setShowEmergencyModal(true)}
-                className="hidden md:flex items-center gap-2.5 bg-red-600 text-white px-4 py-2 rounded-xl shadow-lg shadow-red-600/20 hover:bg-red-750 border border-red-700 animate-pulse cursor-pointer shrink-0"
+                className="hidden md:flex items-center gap-2.5 bg-red-600 text-white px-4 py-2 rounded-xl shadow-lg shadow-red-600/20 hover:bg-red-700 border border-red-700 animate-pulse cursor-pointer shrink-0"
               >
                 <ShieldAlert size={14} />
                 <span className="text-[10px] font-black uppercase tracking-widest">{t('emergency_mode', 'ACİL DURUM PROTOKÖLÜ')}</span>
@@ -244,7 +262,7 @@ const Layout = () => {
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-sm font-black text-app-text tracking-tight uppercase italic leading-none">{getPageTitle()}</span>
-                <span className="text-[8px] font-black text-app-muted uppercase tracking-widest mt-0.5 leading-none">ARZ PROJEKT</span>
+                <span className="text-[8px] font-black text-app-muted uppercase tracking-widest mt-0.5 leading-none">ARZ (Afet Raporlama ve Zamanlama Sistemi)</span>
               </div>
             </div>
 
@@ -266,9 +284,9 @@ const Layout = () => {
                       initial={{ opacity: 0, scale: 0.95, y: -10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                      className="absolute right-0 mt-2 w-64 bg-app-card border border-app-border rounded-[2rem] shadow-premium overflow-hidden z-[60] py-2"
+                      className="absolute right-0 mt-2 w-72 max-h-[80vh] overflow-y-auto bg-app-card border border-app-border rounded-[2rem] shadow-premium scrollbar-none z-[60] py-4"
                     >
-                      <div className="px-3 pb-2 pt-1 border-b border-app-border">
+                      <div className="px-4 pb-3 pt-1 border-b border-app-border">
                         <button 
                           onClick={() => {
                             setShowEmergencyModal(true);
@@ -277,20 +295,60 @@ const Layout = () => {
                           className="w-full bg-[#E30613] text-white hover:bg-red-700 transition-all py-2.5 px-4 rounded-xl font-black text-[10px] tracking-widest flex items-center justify-center gap-2 uppercase shadow-md shadow-red-500/20"
                         >
                           <ShieldAlert size={14} className="animate-bounce" />
-                          <span>ACİL DURUM PROTOKÖLÜ</span>
+                          <span>{t('emergency_mode', 'ACİL DURUM PROTOKOLÜ')}</span>
                         </button>
                       </div>
 
-                      <div className="flex flex-col text-xs font-bold text-app-text">
+                      {/* System Modules Header */}
+                      <div className="px-5 pt-3 pb-1 text-[9px] font-black uppercase text-app-muted tracking-[0.2em]">
+                        {t('system_modules', 'SİSTEM MODÜLLERİ')}
+                      </div>
+
+                      <div className="flex flex-col text-xs font-bold text-app-text px-2">
+                        {allowedNavItems.map((item) => {
+                          const IconComponent = item.icon;
+                          const isActive = location.pathname === item.path;
+                          return (
+                            <button
+                              key={item.id}
+                              onClick={() => {
+                                navigate(item.path);
+                                setShowMobileMenu(false);
+                              }}
+                              className={`w-full px-4 py-2.5 my-0.5 rounded-xl flex items-center gap-3.5 transition-all text-left uppercase text-[9px] tracking-wider font-extrabold ${
+                                isActive 
+                                  ? 'bg-[#003366] text-white font-black' 
+                                  : 'hover:bg-app-bg text-app-text'
+                              }`}
+                              style={isActive ? { backgroundColor: 'var(--app-primary)', color: 'var(--app-on-primary)' } : undefined}
+                            >
+                              <IconComponent size={15} className={isActive ? 'text-white' : 'text-app-muted'} style={isActive ? { color: 'var(--app-on-primary)' } : undefined} />
+                              <span className="flex-1">{item.name}</span>
+                              {isActive && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" style={{ backgroundColor: 'var(--app-accent)' }} />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="border-t border-app-border my-2" />
+
+                      {/* General Menu Items Header */}
+                      <div className="px-5 py-1 text-[9px] font-black uppercase text-app-muted tracking-[0.2em]">
+                        {t('menu_title', 'MENÜ')}
+                      </div>
+
+                      <div className="flex flex-col text-xs font-bold text-app-text px-2">
                         <button 
                           onClick={() => {
                             navigate('/profile');
                             setShowMobileMenu(false);
                           }}
-                          className="px-4 py-3 hover:bg-app-bg flex items-center gap-3 transition-all text-left uppercase text-[10px] tracking-wider"
+                          className="px-4 py-2.5 my-0.5 hover:bg-app-bg rounded-xl flex items-center gap-3.5 transition-all text-left uppercase text-[9px] tracking-wider font-extrabold text-app-text"
                         >
-                          <UserIcon size={16} className="text-app-primary" />
-                          <span>PROFiL</span>
+                          <UserCircle size={15} className="text-app-muted" />
+                          <span>{t('menu_profile', 'PROFiL')}</span>
                         </button>
 
                         <button 
@@ -298,10 +356,10 @@ const Layout = () => {
                             navigate('/settings');
                             setShowMobileMenu(false);
                           }}
-                          className="px-4 py-3 hover:bg-app-bg flex items-center gap-3 transition-all text-left uppercase text-[10px] tracking-wider"
+                          className="px-4 py-2.5 my-0.5 hover:bg-app-bg rounded-xl flex items-center gap-3.5 transition-all text-left uppercase text-[9px] tracking-wider font-extrabold text-app-text"
                         >
-                          <Palette size={16} className="text-orange-500" />
-                          <span>GÖRÜNÜM / TEMA</span>
+                          <Palette size={15} className="text-orange-500" />
+                          <span>{t('menu_theme', 'GÖRÜNÜM / TEMA')}</span>
                         </button>
 
                         <button 
@@ -309,20 +367,20 @@ const Layout = () => {
                             setShowNotifications(!showNotifications);
                             setShowMobileMenu(false);
                           }}
-                          className="px-4 py-3 hover:bg-app-bg flex items-center justify-between gap-3 transition-all text-left uppercase text-[10px] tracking-wider"
+                          className="px-4 py-2.5 my-0.5 hover:bg-app-bg rounded-xl flex items-center justify-between gap-3.5 transition-all text-left uppercase text-[9px] tracking-wider font-extrabold text-app-text"
                         >
-                          <div className="flex items-center gap-3">
-                            <Bell size={16} className="text-yellow-500" />
-                            <span>BİLDİRİMLER ({(notifications.filter(n => !n.read)).length})</span>
+                          <div className="flex items-center gap-3.5">
+                            <Bell size={15} className="text-yellow-500" />
+                            <span>{t('notifications_count_label', 'BİLDİRİMLER')} ({(notifications.filter(n => !n.read)).length})</span>
                           </div>
                           {notifications.some(n => !n.read) && (
                             <span className="w-2 h-2 bg-[#E30613] rounded-full animate-ping" />
                           )}
                         </button>
 
-                        <div className="px-4 py-2 bg-app-bg/50 border-y border-app-border">
+                        <div className="mx-2 my-2 px-3 py-2 bg-app-bg/50 border border-app-border rounded-2xl">
                           <div className="text-[8px] font-black uppercase text-app-muted tracking-widest mb-1.5 flex items-center gap-1">
-                            <GlobeIcon size={10} /> DİL SEÇİMİ / LANGUAGE
+                            <GlobeIcon size={10} /> {t('language_settings', 'DİL SEÇİMİ / LANGUAGE')}
                           </div>
                           <div className="grid grid-cols-2 gap-1.5">
                             <button 
@@ -331,6 +389,7 @@ const Layout = () => {
                                 setShowMobileMenu(false);
                               }}
                               className={`py-1 px-2 text-[9px] font-black rounded-lg transition-all border ${i18n.language === 'tr' ? 'bg-app-primary border-app-primary text-white font-black' : 'bg-app-card border-app-border text-app-muted'}`}
+                              style={i18n.language === 'tr' ? { backgroundColor: 'var(--app-primary)', borderColor: 'var(--app-primary)' } : undefined}
                             >
                               🇹🇷 TR
                             </button>
@@ -340,16 +399,17 @@ const Layout = () => {
                                 setShowMobileMenu(false);
                               }}
                               className={`py-1 px-2 text-[9px] font-black rounded-lg transition-all border ${i18n.language === 'en' ? 'bg-app-primary border-app-primary text-white font-black' : 'bg-app-card border-app-border text-app-muted'}`}
+                              style={i18n.language === 'en' ? { backgroundColor: 'var(--app-primary)', borderColor: 'var(--app-primary)' } : undefined}
                             >
                               🇺🇸 EN
                             </button>
                           </div>
                         </div>
 
-                        <div className="px-4 py-2.5 flex items-center justify-between border-b border-app-border">
-                          <span className="text-[10px] uppercase font-black text-app-muted tracking-wider">SİSTEM DURUMU:</span>
-                          <span className="text-[9px] uppercase font-black text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
-                            <Check size={10} /> ONLINE
+                        <div className="px-4 py-2 flex items-center justify-between border-b border-app-border">
+                          <span className="text-[9px] uppercase font-black text-app-muted tracking-wider">{t('system_status', 'SİSTEM DURUMU')}:</span>
+                          <span className="text-[8px] uppercase font-black text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Check size={8} /> ONLINE
                           </span>
                         </div>
 
@@ -358,10 +418,10 @@ const Layout = () => {
                             logout();
                             setShowMobileMenu(false);
                           }}
-                          className="px-4 py-3 hover:bg-red-50 text-red-650 flex items-center gap-3 transition-all text-left uppercase text-[10px] tracking-wider"
+                          className="px-4 py-3 hover:bg-red-50 text-red-600 flex items-center gap-3.5 transition-all text-left uppercase text-[9px] tracking-wider font-extrabold"
                         >
-                          <LogOut size={16} className="text-red-500" />
-                          <span className="text-red-500 font-black">OTURUMU KAPAT</span>
+                          <LogOut size={15} className="text-red-500" />
+                          <span className="text-red-500 font-extrabold">{t('logout_text', 'OTURUMU KAPAT')}</span>
                         </button>
                       </div>
                     </motion.div>
@@ -413,7 +473,7 @@ const Layout = () => {
                     }
                   }}
                   className={`bottom-nav-item cursor-pointer flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-300 ${
-                    isActive ? 'active-item text-app-primary' : 'text-app-muted'
+                    isActive ? 'active' : ''
                   }`}
                 >
                   <TabIcon size={20} className={isActive ? 'scale-110' : ''} />
@@ -577,7 +637,7 @@ const Layout = () => {
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-red-100 text-[#E30613] flex items-center justify-center"><PhoneCall size={16} className="animate-bounce" /></div>
                       <div>
-                        <div className="text-[10px] font-black uppercase text-red-750">{t('emergency_help', 'ACiL YARDIM TALEBi')}</div>
+                        <div className="text-[10px] font-black uppercase text-[#E30613]">{t('emergency_help', 'ACiL YARDIM TALEBi')}</div>
                         <div className="text-[8px] font-bold text-red-700 uppercase">Doğrudan yüksek öncelikli kırmızı kod bildirimi</div>
                       </div>
                     </div>
@@ -597,23 +657,42 @@ const Layout = () => {
         </AnimatePresence>
 
         {/* Footer */}
-        {!isMobile && (
-          <footer className="mt-auto border-t border-app-border bg-app-card/80 backdrop-blur-md p-6 flex flex-col sm:flex-row justify-between items-center px-12 shrink-0 gap-4">
-            <div className="text-[10px] text-app-muted font-black uppercase tracking-[0.2em] text-center sm:text-left italic">
-              ARZ (Afet Raporlama ve Zamanlama) Sistemi © 2026 | <span className="text-[#E30613]">Şehmus AYKUT</span> tarafından geliştirilmiştir.
+        <footer 
+          className="mt-auto border-t border-app-border bg-app-card/80 backdrop-blur-md px-4 shrink-0 transition-all duration-300"
+          style={isMobile ? {
+            paddingTop: '6px',
+            paddingBottom: 'calc(70px + env(safe-area-inset-bottom))',
+            paddingLeft: '12px',
+            paddingRight: '12px',
+          } : {
+            paddingTop: '12px',
+            paddingBottom: '12px',
+            paddingLeft: '48px',
+            paddingRight: '48px',
+          }}
+        >
+          <div className="flex flex-col md:flex-row justify-between items-center gap-1.5 md:gap-4 text-center md:text-left">
+            <div className="flex flex-col gap-0.5 md:gap-1 max-w-full">
+              <div className="text-[8px] md:text-[10px] text-app-muted font-black uppercase tracking-tight leading-normal max-w-full break-words line-clamp-2">
+                ARZ (AFET RAPORLAMA VE ZAMANLAMA) SİSTEMİ © 2026 Şehmus Aykut Tarafından Geliştirilmiştir
+              </div>
+              <div className="text-[7.5px] md:text-[9.5px] text-app-text font-black tracking-tight leading-normal max-w-full break-words">
+                • Şehmus AYKUT • Fatma Nur AYKUT • Aghajan MUSALI • Prof. Dr. Vugar Ali TÜRKSOY
+              </div>
             </div>
-            <div className="flex gap-8">
-              <div className="flex items-center gap-2">
+            
+            <div className="hidden sm:flex items-center gap-6 shrink-0 text-[8.5px] md:text-[9.5px]">
+              <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.5)]"></div>
-                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest leading-none">LOCAL BRAIN {t('status.active')}</span>
+                <span className="font-black text-app-muted uppercase tracking-widest leading-none">LOCAL BRAIN {t('status_active', 'AKTİF')}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-app-primary/100 rounded-full shadow-[0_0_5px_rgba(37,99,235,0.5)]"></div>
-                <span className="text-[9px] font-black text-app-muted uppercase tracking-widest leading-none">SECURE LINK (SSL)</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 bg-[#ED1C24] rounded-full animate-pulse shadow-[0_0_5px_rgba(237,28,36,0.5)]"></div>
+                <span className="font-black text-app-muted uppercase tracking-widest leading-none">SECURE LINK (SSL)</span>
               </div>
             </div>
-          </footer>
-        )}
+          </div>
+        </footer>
       </motion.div>
     </div>
   );

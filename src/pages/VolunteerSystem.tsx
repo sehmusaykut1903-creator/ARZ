@@ -137,7 +137,7 @@ const VolunteerSystem = () => {
           </button>
           <button 
             onClick={() => setShowAddModal(true)}
-            className="bg-secondary text-app-on-primary px-8 py-5 rounded-3xl font-black text-[11px] uppercase tracking-widest shadow-premium shadow-red-500/20 active:scale-95 transition-all flex items-center gap-3"
+            className="bg-secondary text-app-on-secondary px-8 py-5 rounded-3xl font-black text-[11px] uppercase tracking-widest shadow-premium shadow-red-500/20 active:scale-95 transition-all flex items-center gap-3"
           >
             <UserPlus size={20} />
             YENİ GÖNÜLLÜ KAYDI
@@ -257,7 +257,7 @@ const VolunteerSystem = () => {
                        className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-[1.5rem] text-[11px] font-black uppercase tracking-widest transition-all shadow-premium ${
                          v.status === VolunteerStatus.IDLE 
                          ? 'bg-primary text-app-on-primary shadow-blue-500/20 hover:scale-[1.02]' 
-                         : 'bg-secondary text-app-on-primary shadow-red-500/20 hover:scale-[1.02]'
+                         : 'bg-secondary text-app-on-secondary shadow-red-500/20 hover:scale-[1.02]'
                        }`}
                      >
                         {v.status === VolunteerStatus.IDLE ? <Zap size={16} /> : <Clock size={16} />}

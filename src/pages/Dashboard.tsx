@@ -41,36 +41,36 @@ const Dashboard = () => {
 
   const getStats = () => {
     const baseStats = [
-      { label: 'Sistem Riski', value: '%84.2', color: 'text-red-600', progress: 84, sub: 'Kritik Durum', path: '/ai-center' },
+      { label: t('dashboard_system_risk', 'Sistem Riski'), value: '%84.2', color: 'text-red-600', progress: 84, sub: t('dashboard_critical_situation', 'Kritik Durum'), path: '/ai-center' },
     ];
 
     switch (user?.role) {
       case 'health_personnel':
         return [
-          { label: 'Aktif Hastalar', value: patients.length + 1428, color: 'text-app-primary', sub: '+12 Yeni Giriş', subColor: 'text-red-500', path: '/clinical' },
-          { label: 'Triyaj Bekleyen', value: '42', color: 'text-red-500', sub: 'Acil Müdahale', subColor: 'text-red-500', path: '/clinical' },
-          { label: 'Klinik Destek', value: 'AKTİF', color: 'text-app-primary', sub: 'AI Asistan Hazır', subColor: 'text-blue-400', path: '/ai-center' },
+          { label: t('dashboard_active_patients', 'Aktif Hastalar'), value: patients.length + 1428, color: 'text-app-primary', sub: t('dashboard_new_entries_count', '+12 Yeni Giriş'), subColor: 'text-red-500', path: '/clinical' },
+          { label: t('dashboard_waiting_triage', 'Triyaj Bekleyen'), value: '42', color: 'text-red-500', sub: t('dashboard_emergency_med', 'Acil Müdahale'), subColor: 'text-red-500', path: '/clinical' },
+          { label: t('dashboard_clinical_support_card', 'Klinik Destek'), value: 'AKTİF', color: 'text-app-primary', sub: t('dashboard_ai_ready', 'AI Asistan Hazır'), subColor: 'text-blue-400', path: '/ai-center' },
           ...baseStats
         ];
       case 'logistics_manager':
         return [
-          { label: 'Aktif Sevkiyatlar', value: shipments.length, color: 'text-orange-600', sub: '5 Geciken', subColor: 'text-red-500', path: '/logistics' },
-          { label: 'Envanter Doluluk', value: '%92', color: 'text-app-primary', sub: 'Depo Kapasite', subColor: 'text-blue-500', path: '/logistics' },
-          { label: 'Rota Verimi', value: '%98', color: 'text-green-600', sub: 'Optimum Akış', subColor: 'text-green-500', path: '/map' },
+          { label: t('active_shipments', 'Aktif Sevkiyatlar'), value: shipments.length, color: 'text-orange-600', sub: '5 Geciken', subColor: 'text-red-500', path: '/logistics' },
+          { label: t('dashboard_inventory_occupancy', 'Envanter Doluluk'), value: '%92', color: 'text-app-primary', sub: t('dashboard_depot_capacity', 'Depo Kapasite'), subColor: 'text-blue-500', path: '/logistics' },
+          { label: t('dashboard_route_efficiency', 'Rota Verimi'), value: '%98', color: 'text-green-600', sub: t('dashboard_optimum_flow', 'Optimum Akış'), subColor: 'text-green-500', path: '/map' },
           ...baseStats
         ];
       case 'afad_operator':
         return [
-          { label: 'Olay Yönetimi', value: reports.length, color: 'text-red-600', sub: 'Aktif Bildirimler', subColor: 'text-red-500', path: '/field' },
-          { label: 'Saha Ekipleri', value: volunteers.length + 40, color: 'text-app-primary', sub: 'Görevde', subColor: 'text-blue-500', path: '/volunteer' },
-          { label: 'Stratejik Risk', value: '%88', color: 'text-red-600', sub: 'Kritik Seviye', subColor: 'text-red-500', path: '/ai-center' },
+          { label: t('dashboard_event_management', 'Olay Yönetimi'), value: reports.length, color: 'text-red-600', sub: t('dashboard_active_alerts', 'Aktif Bildirimler'), subColor: 'text-red-500', path: '/field' },
+          { label: t('dashboard_field_teams', 'Saha Ekipleri'), value: volunteers.length + 40, color: 'text-app-primary', sub: t('dashboard_on_duty', 'Görevde'), subColor: 'text-blue-500', path: '/volunteer' },
+          { label: t('dashboard_strategic_risk', 'Stratejik Risk'), value: '%88', color: 'text-red-600', sub: t('dashboard_critical_level', 'Kritik Seviye'), subColor: 'text-red-500', path: '/ai-center' },
           ...baseStats
         ];
       case 'citizen':
         return [
-          { label: 'Güvenli Alanlar', value: '14 Nokta', color: 'text-green-600', sub: 'Size En Yakın', subColor: 'text-green-500', path: '/map' },
-          { label: 'Yardım Durumu', value: 'AKTİF', color: 'text-app-primary', sub: 'Talepler Alınıyor', subColor: 'text-blue-500', path: '/field' },
-          { label: 'Afet Rehberi', value: 'OKU', color: 'text-app-text', sub: 'Hazırlık Bilgileri', subColor: 'text-app-muted', path: '/settings' },
+          { label: t('dashboard_safe_areas', 'Güvenli Alanlar'), value: '14 Nokta', color: 'text-green-600', sub: t('dashboard_closest_to_you', 'Size En Yakın'), subColor: 'text-green-500', path: '/map' },
+          { label: t('dashboard_help_status', 'Yardım Durumu'), value: 'AKTİF', color: 'text-app-primary', sub: t('dashboard_receiving_requests', 'Talepler Alınıyor'), subColor: 'text-blue-500', path: '/field' },
+          { label: t('dashboard_preparedness_info', 'Afet Rehberi'), value: 'OKU', color: 'text-app-text', sub: t('dashboard_preparedness_info', 'Hazırlık Bilgileri'), subColor: 'text-app-muted', path: '/settings' },
         ];
       default:
         return [
@@ -82,11 +82,11 @@ const Dashboard = () => {
     }
   };
 
-  const dashboardLabel = user?.role === 'health_personnel' ? 'Hekim Karar Destek Dashboard' :
-                       user?.role === 'afad_operator' ? 'AFAD Operasyon Yönetim Merkezi' :
-                       user?.role === 'logistics_manager' ? 'Lojistik ve Sevkiyat Dashboard' :
-                       user?.role === 'citizen' ? 'Vatandaş Bilgilendirme Portalı' :
-                       'ARZ Genel Yönetim Paneli';
+  const dashboardLabel = user?.role === 'health_personnel' ? t('dashboard_label_health', 'Hekim Karar Destek Dashboard') :
+                       user?.role === 'afad_operator' ? t('dashboard_label_afad', 'AFAD Operasyon Yönetim Merkezi') :
+                       user?.role === 'logistics_manager' ? t('dashboard_label_logistics', 'Lojistik ve Sevkiyat Dashboard') :
+                       user?.role === 'citizen' ? t('dashboard_label_citizen', 'Vatandaş Bilgilendirme Portalı') :
+                       t('dashboard_label_default', 'ARZ Genel Yönetim Paneli');
 
   const stats = getStats();
 
@@ -104,7 +104,7 @@ const Dashboard = () => {
         <div className="relative z-10 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-10">
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="bg-secondary text-app-on-primary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] animate-pulse flex items-center gap-2">
+              <div className="bg-secondary text-app-on-secondary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] animate-pulse flex items-center gap-2">
                 <ShieldAlert size={12} /> {t('live_system_active', 'Live Operation Mode')}
               </div>
               <span className="text-app-on-primary/30 text-[10px] font-black tracking-widest uppercase border border-white/10 px-3 py-1 rounded-full">GRID-ID: YGT-66-ARZ</span>
@@ -128,7 +128,7 @@ const Dashboard = () => {
              </button>
              <button 
                onClick={() => setShowEmergencyModal(true)}
-               className="bg-secondary hover:bg-[#DC2626] text-app-on-primary px-8 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-red-500/40 transition-all hover:scale-[1.05] active:scale-95 flex items-center gap-3 animate-alert"
+               className="bg-secondary hover:bg-[#DC2626] text-app-on-secondary px-8 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-red-500/40 transition-all hover:scale-[1.05] active:scale-95 flex items-center gap-3 animate-alert"
              >
                <PhoneCall size={18} /> {t('emergency_help')}
              </button>
@@ -404,12 +404,28 @@ const Dashboard = () => {
                  
                  <div className="pt-8">
                     <div className="bg-app-bg p-6 rounded-[2rem] border border-app-border">
-                      <div className="text-[10px] font-black text-app-muted uppercase tracking-widest mb-4">Sistem Sorumlusu</div>
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-dark-surface rounded-2xl flex items-center justify-center text-app-on-primary font-black">SA</div>
-                        <div>
-                          <div className="text-xs font-black text-app-text capitalize">Şehmus AYKUT</div>
-                          <div className="text-[9px] text-app-primary font-black uppercase tracking-widest leading-none mt-1">Lead Developer</div>
+                      <div className="text-[10px] font-black text-app-muted uppercase tracking-widest mb-2">{t('system_responsible', 'Sistem Geliştiricileri')}</div>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 bg-app-primary rounded-xl flex items-center justify-center text-white font-black shrink-0 text-xs shadow-md" style={{ backgroundColor: 'var(--app-primary)' }}>ARZ</div>
+                          <div className="space-y-1">
+                            <div className="text-xs font-black text-app-text">Şehmus AYKUT • Fatma Nur AYKUT • Aghajan MUSALI</div>
+                            <div className="text-[9px] text-app-muted font-bold uppercase tracking-[0.08em] leading-normal">{t('project_team', 'Proje Ekibi / Geliştiriciler')}</div>
+                          </div>
+                        </div>
+                        <div className="border-t border-app-border/60 pt-2 flex items-start gap-4">
+                           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black shrink-0 text-xs shadow-md">DEV</div>
+                           <div className="space-y-1">
+                             <div className="text-xs font-black text-app-text">Şehmus AYKUT</div>
+                             <div className="text-[9px] text-indigo-600 font-bold uppercase tracking-[0.08em] leading-normal">{t('lead_developer', 'Ana Geliştirici')}</div>
+                           </div>
+                        </div>
+                        <div className="border-t border-app-border/60 pt-2 flex items-start gap-4">
+                           <div className="w-10 h-10 bg-[#ED1C24] rounded-xl flex items-center justify-center text-white font-black shrink-0 text-xs shadow-md">DNŞ</div>
+                           <div className="space-y-1">
+                             <div className="text-xs font-black text-app-text">Prof. Dr. Vugar Ali TÜRKSOY</div>
+                             <div className="text-[9px] text-[#ED1C24] font-bold uppercase tracking-[0.08em] leading-normal">{t('project_advisor', 'Proje Akademik Danışmanı')}</div>
+                           </div>
                         </div>
                       </div>
                     </div>
@@ -420,27 +436,31 @@ const Dashboard = () => {
       </div>
 
       {/* Project Identity Footer Info */}
-      <div className="pt-10 border-t border-app-border flex flex-col items-center gap-6 text-center opacity-40 hover:opacity-100 transition-opacity duration-700">
+      <div className="pt-10 border-t border-app-border flex flex-col items-center gap-6 text-center opacity-45 hover:opacity-100 transition-opacity duration-700">
          <div className="flex flex-wrap justify-center gap-x-12 gap-y-6">
             <div className="space-y-1">
                <p className="text-[9px] font-black text-app-muted uppercase tracking-widest">Proje Adı</p>
                <p className="text-[11px] font-black text-app-text uppercase italic">{projectIdentity.name}</p>
             </div>
             <div className="space-y-1">
+               <p className="text-[9px] font-black text-app-muted uppercase tracking-widest">Ana Geliştirici</p>
+               <p className="text-[11.5px] font-black text-app-text uppercase italic">{projectIdentity.leadDeveloper}</p>
+            </div>
+            <div className="space-y-1">
                <p className="text-[9px] font-black text-app-muted uppercase tracking-widest">Proje Ekibi</p>
-               <p className="text-[11px] font-black text-app-text uppercase italic">{projectIdentity.team}</p>
+               <p className="text-[11.5px] font-black text-app-text uppercase italic">{projectIdentity.team}</p>
+            </div>
+            <div className="space-y-1">
+               <p className="text-[9px] font-black text-app-muted uppercase tracking-widest">Akademik Danışman</p>
+               <p className="text-[11.5px] font-black text-[#E30613] uppercase italic">{projectIdentity.advisor}</p>
             </div>
             <div className="space-y-1">
                <p className="text-[9px] font-black text-app-muted uppercase tracking-widest">Kurum / Üniversite</p>
                <p className="text-[11px] font-black text-app-text uppercase italic">{projectIdentity.institution}</p>
             </div>
-            <div className="space-y-1">
-               <p className="text-[9px] font-black text-red-500 uppercase tracking-widest">Geliştirici</p>
-               <p className="text-[11px] font-black text-[#E30613] uppercase italic">{projectIdentity.leadDeveloper}</p>
-            </div>
          </div>
-         <p className="text-[10px] font-black text-app-muted uppercase tracking-[0.4em] italic leading-relaxed">
-            ARZ (Afet Raporlama ve Zamanlama) Sistemi © 2026 | {projectIdentity.version}
+         <p className="text-[10px] font-black text-app-muted uppercase tracking-[0.2em] italic leading-relaxed">
+            ARZ (AFET RAPORLAMA VE ZAMANLAMA) SİSTEMİ © 2026 | Şehmus AYKUT • Fatma Nur AYKUT • Aghajan MUSALI • Prof. Dr. Vugar Ali TÜRKSOY
          </p>
       </div>
 

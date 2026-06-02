@@ -4,15 +4,15 @@ import i18n from '../lib/i18n';
 import { restoreSession, clearAuthSession } from '../services/authService';
 
 export const projectIdentity: ProjectIdentity = {
-  name: 'ARZ - Afet Raporlama ve Zamanlama',
+  name: 'ARZ - Afet Raporlama ve Zamanlama Sistemi',
   fullTitle: 'Yapay Zeka Destekli Ulusal Afet Raporlama, Zamanlama ve Karar Destek Sistemi',
   slogan: 'Doğru Veri, Doğru Zaman, Doğru Müdahale.',
-  team: 'Şehmus Aykut - Aghajan Musalı',
+  team: 'Şehmus AYKUT • Fatma Nur AYKUT • Aghajan MUSALI',
   institution: 'Yozgat Bozok Üniversitesi Tıp Fakültesi',
   department: 'Halk Sağlığı Anabilim Dalı',
   advisor: 'Prof. Dr. Vugar Ali TÜRKSOY',
-  leadDeveloper: 'Şehmus Aykut',
-  version: 'Şehmus Aykut tarafından geliştirilmiştir.'
+  leadDeveloper: 'Şehmus AYKUT',
+  version: 'Şehmus AYKUT • Fatma Nur AYKUT • Aghajan MUSALI • Prof. Dr. Vugar Ali TÜRKSOY'
 };
 
 interface AppContextType {

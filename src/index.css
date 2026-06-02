@@ -18,6 +18,7 @@
   --color-app-on-primary: var(--app-on-primary);
   --color-app-on-card: var(--app-on-card);
   --color-app-on-accent: var(--app-on-accent);
+  --color-app-on-secondary: var(--app-on-secondary);
   --color-dark-surface: var(--app-dark-surface);
   
   --radius-xl: 0.75rem;
@@ -49,6 +50,12 @@
   --app-on-primary: #FFFFFF;
   --app-on-card: #0F172A;
   --app-on-accent: #FFFFFF;
+  --app-on-secondary: #FFFFFF;
+  
+  --app-bottom-nav-bg: rgba(6, 34, 74, 0.94);
+  --app-bottom-nav-border: rgba(255, 255, 255, 0.1);
+  --app-bottom-nav-item-color: rgba(255, 255, 255, 0.6);
+  --app-bottom-nav-item-active: #ED1C24;
   
   --app-glass-bg: rgba(255, 255, 255, 0.7);
   --app-glass-border: rgba(255, 255, 255, 0.3);
@@ -63,6 +70,11 @@
   --app-on-primary: #FFFFFF;
   --app-on-card: #0F172A;
   --app-on-accent: #FFFFFF;
+  --app-on-secondary: #FFFFFF;
+  --app-bottom-nav-bg: rgba(6, 34, 74, 0.94);
+  --app-bottom-nav-border: rgba(255, 255, 255, 0.1);
+  --app-bottom-nav-item-color: rgba(255, 255, 255, 0.6);
+  --app-bottom-nav-item-active: #ED1C24;
 }
 
 [data-theme='kizilay'] {
@@ -74,6 +86,11 @@
   --app-on-primary: #FFFFFF;
   --app-on-card: #111827;
   --app-on-accent: #FFFFFF;
+  --app-on-secondary: #B91C1C;
+  --app-bottom-nav-bg: rgba(69, 10, 10, 0.94);
+  --app-bottom-nav-border: rgba(255, 255, 255, 0.12);
+  --app-bottom-nav-item-color: rgba(255, 255, 255, 0.6);
+  --app-bottom-nav-item-active: #FFFFFF;
 }
 
 [data-theme='yesilay'] {
@@ -85,6 +102,11 @@
   --app-on-primary: #FFFFFF;
   --app-on-card: #0F172A;
   --app-on-accent: #0F172A;
+  --app-on-secondary: #FFFFFF;
+  --app-bottom-nav-bg: rgba(2, 44, 34, 0.94);
+  --app-bottom-nav-border: rgba(255, 255, 255, 0.1);
+  --app-bottom-nav-item-color: rgba(255, 255, 255, 0.6);
+  --app-bottom-nav-item-active: #22C55E;
 }
 
 [data-theme='akut'] {
@@ -96,6 +118,11 @@
   --app-on-primary: #FFFFFF;
   --app-on-card: #0F172A;
   --app-on-accent: #111827;
+  --app-on-secondary: #111827;
+  --app-bottom-nav-bg: rgba(17, 24, 39, 0.94);
+  --app-bottom-nav-border: rgba(255, 255, 255, 0.08);
+  --app-bottom-nav-item-color: rgba(156, 163, 175, 0.7);
+  --app-bottom-nav-item-active: #F97316;
 }
 
 [data-theme='emergency112'] {
@@ -107,6 +134,11 @@
   --app-on-primary: #FFFFFF;
   --app-on-card: #0F172A;
   --app-on-accent: #FFFFFF;
+  --app-on-secondary: #FFFFFF;
+  --app-bottom-nav-bg: rgba(23, 37, 84, 0.94);
+  --app-bottom-nav-border: rgba(255, 255, 255, 0.1);
+  --app-bottom-nav-item-color: rgba(255, 255, 255, 0.6);
+  --app-bottom-nav-item-active: #3B82F6;
 }
 
 [data-size='small'] { --font-scale: 0.92; }
@@ -248,7 +280,7 @@
   }
   
   .arz-btn-emergency {
-    @apply bg-secondary text-white px-4 py-2 rounded-lg font-black hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 text-sm uppercase shadow-lg;
+    @apply bg-secondary text-app-on-secondary px-4 py-2 rounded-lg font-black hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 text-sm uppercase shadow-lg;
   }
 
   .arz-badge {
@@ -334,20 +366,16 @@ button, a, [role="button"] {
   right: 0;
   height: calc(64px + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--app-bottom-nav-bg);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-top: 1px solid var(--app-border);
+  border-top: 1px solid var(--app-bottom-nav-border);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 100;
   box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
-}
-
-[data-theme='akut'] .mobile-bottom-nav {
-  background: rgba(26, 32, 44, 0.95);
-  border-top: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.3s ease, border-top 0.3s ease;
 }
 
 .bottom-nav-item {
@@ -357,7 +385,7 @@ button, a, [role="button"] {
   justify-content: center;
   flex: 1;
   height: 100%;
-  color: var(--app-muted) !important;
+  color: var(--app-bottom-nav-item-color) !important;
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
@@ -367,21 +395,21 @@ button, a, [role="button"] {
 }
 
 .bottom-nav-item svg {
-  color: var(--app-muted) !important;
+  color: var(--app-bottom-nav-item-color) !important;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   margin-bottom: 3px;
   stroke-width: 2.2;
 }
 
 .bottom-nav-item.active {
-  color: var(--app-primary) !important;
+  color: var(--app-bottom-nav-item-active) !important;
   font-weight: 900 !important;
 }
 
 .bottom-nav-item.active svg {
-  color: var(--app-primary) !important;
+  color: var(--app-bottom-nav-item-active) !important;
   transform: scale(1.15) translateY(-2px);
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--app-primary) 35%, transparent));
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--app-bottom-nav-item-active) 65%, transparent));
 }
 
 .mobile-settings-tabs {
