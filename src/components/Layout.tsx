@@ -435,7 +435,7 @@ const Layout = () => {
         {/* Content */}
         <main 
           className="flex-1 overflow-y-auto p-4 md:p-10 custom-scrollbar bg-[#F8FAFC]"
-          style={isMobile ? { paddingBottom: 'calc(100px + env(safe-area-inset-bottom))' } : undefined}
+          style={isMobile ? { paddingBottom: 'calc(114px + env(safe-area-inset-bottom))' } : undefined}
         >
           <ErrorBoundary>
             <AnimatePresence mode="wait">
@@ -658,12 +658,23 @@ const Layout = () => {
 
         {/* Footer */}
         <footer 
-          className="mt-auto border-t border-app-border bg-app-card/80 backdrop-blur-md px-4 shrink-0 transition-all duration-300"
+          className="mt-auto border-t border-app-border bg-app-card/90 backdrop-blur-md px-4 shrink-0 transition-all duration-300"
           style={isMobile ? {
-            paddingTop: '6px',
-            paddingBottom: 'calc(70px + env(safe-area-inset-bottom))',
+            position: 'fixed',
+            bottom: 'calc(64px + env(safe-area-inset-bottom))',
+            left: 0,
+            right: 0,
+            height: '42px',
+            paddingTop: '4px',
+            paddingBottom: '2px',
             paddingLeft: '12px',
             paddingRight: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 90,
+            boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.03)',
           } : {
             paddingTop: '12px',
             paddingBottom: '12px',
@@ -671,12 +682,34 @@ const Layout = () => {
             paddingRight: '48px',
           }}
         >
-          <div className="flex flex-col md:flex-row justify-between items-center gap-1.5 md:gap-4 text-center md:text-left">
-            <div className="flex flex-col gap-0.5 md:gap-1 max-w-full">
-              <div className="text-[8px] md:text-[10px] text-app-muted font-black uppercase tracking-tight leading-normal max-w-full break-words line-clamp-2">
-                ARZ (AFET RAPORLAMA VE ZAMANLAMA) SİSTEMİ © 2026 Şehmus Aykut Tarafından Geliştirilmiştir
+          <div className="flex flex-col md:flex-row justify-between items-center w-full gap-0 md:gap-4 text-center md:text-left h-full">
+            <div className="flex flex-col w-full md:w-auto items-center md:items-start text-center md:text-left justify-center h-full gap-0.5">
+              <div 
+                className="text-app-muted font-semibold uppercase tracking-tight"
+                style={isMobile ? {
+                  fontSize: 'clamp(8px, 1.8vw, 11px)',
+                  letterSpacing: '-0.025em',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  lineHeight: '1',
+                } : {
+                  fontSize: '10px',
+                }}
+              >
+                ARZ (AFET RAPORLAMA VE ZAMANLAMA) SİSTEMİ © 2026 • ŞEHMUS AYKUT TARAFINDAN GELİŞTİRİLMİŞTİR
               </div>
-              <div className="text-[7.5px] md:text-[9.5px] text-app-text font-black tracking-tight leading-normal max-w-full break-words">
+              <div 
+                className="text-app-text font-semibold tracking-tight"
+                style={isMobile ? {
+                  fontSize: 'clamp(7.5px, 1.7vw, 10px)',
+                  letterSpacing: '-0.025em',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  lineHeight: '1',
+                } : {
+                  fontSize: '9.5px',
+                }}
+              >
                 • Şehmus AYKUT • Fatma Nur AYKUT • Aghajan MUSALI • Prof. Dr. Vugar Ali TÜRKSOY
               </div>
             </div>
@@ -684,11 +717,11 @@ const Layout = () => {
             <div className="hidden sm:flex items-center gap-6 shrink-0 text-[8.5px] md:text-[9.5px]">
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.5)]"></div>
-                <span className="font-black text-app-muted uppercase tracking-widest leading-none">LOCAL BRAIN {t('status_active', 'AKTİF')}</span>
+                <span className="font-semibold text-app-muted uppercase tracking-widest leading-none">LOCAL BRAIN {t('status_active', 'AKTİF')}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 bg-[#ED1C24] rounded-full animate-pulse shadow-[0_0_5px_rgba(237,28,36,0.5)]"></div>
-                <span className="font-black text-app-muted uppercase tracking-widest leading-none">SECURE LINK (SSL)</span>
+                <span className="font-semibold text-app-muted uppercase tracking-widest leading-none">SECURE LINK (SSL)</span>
               </div>
             </div>
           </div>

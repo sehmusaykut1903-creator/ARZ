@@ -261,10 +261,66 @@ const Settings = () => {
                </p>
             </div>
 
-            <div className="bg-app-bg/50 p-6 rounded-[2rem] border border-app-border">
-              <p className="text-xs font-bold text-app-text leading-relaxed text-justify">
-                ARZ, afet ve acil durum süreçlerinde saha bildirimi, harita tabanlı afet takibi, lojistik koordinasyon, halk sağlığı izleme, raporlama ve yapay zeka destekli karar desteğini tek merkezde birleştiren dijital bir afet yönetim platformudur. Sistem, afet anında doğru verinin doğru zamanda doğru müdahaleye dönüşmesini hedefler.
-              </p>
+            {/* Corporate Info Cards - AFAD + Apple premium style */}
+            <div className="space-y-4">
+              <div className="bg-app-bg/60 p-6 rounded-[2rem] border border-app-border backdrop-blur-md shadow-sm">
+                <h4 className="text-xs font-black text-[#E30613] uppercase tracking-widest mb-3">ARZ NEDİR?</h4>
+                <p className="text-xs font-bold text-app-text leading-relaxed text-justify">
+                  ARZ (Afet Raporlama ve Zamanlama Sistemi), afet ve acil durum süreçlerinde saha koordinasyonu, canlı harita takibi, lojistik yönetimi, halk sağlığı izleme, yapay zeka destekli analiz ve hızlı karar desteği sağlayan yeni nesil dijital afet yönetim platformudur.
+                </p>
+              </div>
+
+              <div className="bg-app-bg/60 p-6 rounded-[2rem] border border-app-border backdrop-blur-md shadow-sm">
+                <h4 className="text-xs font-black text-[#E30613] uppercase tracking-widest mb-3">SİSTEMİN AMACI</h4>
+                <p className="text-xs font-bold text-app-text leading-relaxed text-justify">
+                  Sistem; doğru verinin doğru zamanda doğru müdahaleye dönüşmesini sağlayarak afet anındaki koordinasyon kaybını azaltmayı, ekipler arası iletişimi güçlendirmeyi ve müdahale süreçlerini hızlandırmayı hedeflemektedir.
+                </p>
+              </div>
+
+              <div className="bg-app-bg/60 p-6 rounded-[2rem] border border-app-border backdrop-blur-md shadow-sm">
+                <h4 className="text-xs font-black text-[#E30613] uppercase tracking-widest mb-3">TEMEL ÖZELLİKLER</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-bold text-app-text">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#E30613]">•</span>
+                    <span>Canlı afet haritaları</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#E30613]">•</span>
+                    <span>Gerçek zamanlı saha bildirimi</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#E30613]">•</span>
+                    <span>Yapay zeka destekli analiz sistemi</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#E30613]">•</span>
+                    <span>Mobil + web erişimi</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#E30613]">•</span>
+                    <span>Çoklu kullanıcı rol sistemi</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#E30613]">•</span>
+                    <span>Acil durum protokolleri</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#E30613]">•</span>
+                    <span>Lojistik koordinasyon</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#E30613]">•</span>
+                    <span>Çok dilli destek sistemi</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-app-bg/60 p-6 rounded-[2rem] border border-app-border backdrop-blur-md shadow-sm">
+                <h4 className="text-xs font-black text-[#E30613] uppercase tracking-widest mb-3">TEKNOLOJİ ALTYAPISI</h4>
+                <p className="text-xs font-bold text-app-text leading-relaxed text-justify">
+                  ARZ sistemi modern web teknolojileri, responsive mobil yapı, bulut altyapısı ve gerçek zamanlı veri akışı prensipleri ile geliştirilmiştir.
+                </p>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
