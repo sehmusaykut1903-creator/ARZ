@@ -84,6 +84,82 @@ const MapModule = () => {
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [aiResult, setAiResult] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [focusNotification, setFocusNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: 'info' | 'success';
+  }>({
+    show: false,
+    message: '',
+    type: 'info'
+  });
+
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    return Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(lon1 - lon2, 2));
+  };
+
+  const focusOnNearestCritical = (userCoords?: [number, number]) => {
+    // Find all critical provinces
+    const criticalProvinces = mockProvinces.filter(p => p.riskLevel === 'critical');
+    const targetList = criticalProvinces.length > 0 ? criticalProvinces : mockProvinces.filter(p => p.riskLevel === 'high');
+    
+    if (targetList.length === 0) return;
+
+    // reference coords (either user coordinates, or default/current map center)
+    const refCoords = userCoords || mapCenter;
+
+    let nearest = targetList[0];
+    let minDistance = calculateDistance(refCoords[0], refCoords[1], nearest.coords[0], nearest.coords[1]);
+
+    for (let i = 1; i < targetList.length; i++) {
+      const dist = calculateDistance(refCoords[0], refCoords[1], targetList[i].coords[0], targetList[i].coords[1]);
+      if (dist < minDistance) {
+        minDistance = dist;
+        nearest = targetList[i];
+      }
+    }
+
+    setMapCenter(nearest.coords);
+    setZoom(11);
+    setSelectedProvince(nearest);
+    
+    setFocusNotification({
+      show: true,
+      message: userCoords 
+        ? `${t('focus_nearest_msg', 'Konumunuza en yakın afet bölgesine odaklanıldı')}: ${nearest.name}`
+        : `${t('focus_critical_msg', 'En yüksek riskli afet bölgesine odaklanıldı')}: ${nearest.name}`,
+      type: 'success'
+    });
+
+    setTimeout(() => {
+      setFocusNotification(prev => ({ ...prev, show: false }));
+    }, 4000);
+  };
+
+  const handleFocusRegion = () => {
+    if (navigator.geolocation) {
+      setFocusNotification({
+        show: true,
+        message: t('detecting_location', 'Konumunuz belirleniyor...'),
+        type: 'info'
+      });
+      
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const userLat = pos.coords.latitude;
+          const userLng = pos.coords.longitude;
+          focusOnNearestCritical([userLat, userLng]);
+        },
+        (error) => {
+          console.warn('Geolocation error, falling back to general critical area selection', error);
+          focusOnNearestCritical();
+        },
+        { timeout: 5000 }
+      );
+    } else {
+      focusOnNearestCritical();
+    }
+  };
 
   // Persistent layers logic
   useEffect(() => {
@@ -355,6 +431,37 @@ const MapModule = () => {
               );
             })}
           </MapContainer>
+
+          {/* Top Left Focus Button */}
+          <div className="absolute top-4 left-4 z-[1000]">
+            <button
+              onClick={handleFocusRegion}
+              className="flex items-center gap-2 bg-app-card/95 backdrop-blur-xl border border-app-border hover:border-app-primary/40 text-app-text hover:text-app-primary px-3.5 py-2.5 rounded-2xl shadow-sm transition-all hover:shadow-md active:scale-95 group font-black text-[9px] min-[360px]:text-[10px] uppercase tracking-widest"
+              title={t('focus_region_desc', 'Mevcut konumunuza veya en yakın kritik bölgeye odaklanır')}
+            >
+              <div className="relative flex items-center justify-center">
+                <span className="absolute w-2 h-2 rounded-full bg-app-primary opacity-50 animate-ping" style={{ backgroundColor: 'var(--app-primary)' }}></span>
+                <span className="relative w-1.5 h-1.5 rounded-full bg-app-primary" style={{ backgroundColor: 'var(--app-primary)' }}></span>
+              </div>
+              <Crosshair size={13} className="text-app-primary group-hover:rotate-90 transition-transform duration-300" style={{ color: 'var(--app-primary)' }} />
+              <span>{t('focus_region', 'Bölgeye Odakla')}</span>
+            </button>
+          </div>
+
+          {/* Center Feedback Toast for Focus Event */}
+          <AnimatePresence>
+            {focusNotification.show && (
+              <motion.div
+                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                className="absolute top-16 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 bg-app-card/95 backdrop-blur-xl border border-app-border px-4 py-2.5 rounded-2xl shadow-xl z-[1000] flex items-center gap-2 max-w-full sm:max-w-md text-left"
+              >
+                <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${focusNotification.type === 'success' ? 'bg-emerald-500' : 'bg-indigo-600'} animate-pulse`} />
+                <span className="text-[9.5px] font-black uppercase tracking-wider text-app-text leading-tight">{focusNotification.message}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Map Controls */}
           <div className="absolute top-4 right-4 flex flex-col gap-2 z-[1000]">
